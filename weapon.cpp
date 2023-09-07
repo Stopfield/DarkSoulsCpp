@@ -57,17 +57,23 @@ void Weapon::setDurability(int durability)
 
 double Weapon::inflictDamage(double enemyLife)
 {
-    if (enemyLife <= 0)
+    if (this->durability > 0)
     {
-        cout << "O inimigo já morreu!\n";
+        if (enemyLife <= 0)
+            cout << "O inimigo já morreu!\n";
+
+        this->setDurability(this->durability - 1);
+        return enemyLife - this->damage;
     }
-    this->setDurability(this->durability - 1);
-    return enemyLife - this->damage;
+    cout << "A espada está quebrada! Não dá dano\n";
+    return enemyLife;
 }
 
 void Weapon::printStatus() const
 {
-    cout << "\n* " << this->name << "\n";
+    cout << "\n======   WEAPON   =====\n";
+    cout << "* " << this->name << "\n";
     cout << "* Damage: \t" << this->damage << "\n";
-    cout << "* Durability: \t" << this->durability << "\n\n";
+    cout << "* Durability: \t" << this->durability << "\n";
+    cout << "======   WEAPON   =====\n\n";
 }
