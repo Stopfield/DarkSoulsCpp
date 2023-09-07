@@ -27,7 +27,7 @@ void Weapon::setName(string name)
     if (name.empty())
     {
         cout << "Weapon name can't be empty! Defaulting to \"Empty Weapon\"";
-        this->name = name;
+        this->name = "Empty Weapon";
         return;
     }
     this->name = name;
@@ -38,7 +38,7 @@ void Weapon::setDamage(double damage)
     if (damage < 0)
     {
         cout << "Damage can't be negative! Defaulting to zero\n";
-        this->damage = damage;
+        this->damage = 0;
         return;
     }
     this->damage = damage;
