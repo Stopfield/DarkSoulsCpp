@@ -48,8 +48,8 @@ void Weapon::setDurability(int durability)
 {
     if (durability < 0)
     {
-        cout << "Durability can't be negative! Defaulting to 100\n";
-        this->durability = 100;
+        cout << "Durability can't be negative! Converting to 0\n";
+        this->durability = 0;
         return;
     }
     this->durability = durability;
@@ -61,6 +61,7 @@ double Weapon::inflictDamage(double enemyLife)
     {
         cout << "O inimigo já morreu!\n";
     }
+    this->setDurability(this->durability - 1);
     return enemyLife - this->damage;
 }
 
