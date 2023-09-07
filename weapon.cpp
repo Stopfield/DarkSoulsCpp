@@ -48,7 +48,7 @@ void Weapon::setDurability(int durability)
 {
     if (durability < 0)
     {
-        cout << "Durability can't be negative! Converting to 0\n";
+        cout << "Durability can't be negative! Defaulting to 0\n";
         this->durability = 0;
         return;
     }
