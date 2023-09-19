@@ -4,17 +4,19 @@ Weapon::Weapon()
 {
     cout << "Creating empty weapon\n";
     this->setName("Empty Weapon");
-    this->setDurability(100);    
-    this->setDamage(0.0);    
+    this->setDurability(100);
+    this->setDamage(0.0);
 }
 
 /**
  * A ordem de inicialização no .h é importante!
 */
 Weapon::Weapon(string name, double damage, int durability)
-:name(name), damage(damage), durability(durability)
 {
     cout << "Creating weapon " << name << "...\n";
+    this->setName(name);
+    this->setDamage(damage);
+    this->setDurability(durability);
 }
 
 Weapon::~Weapon()
