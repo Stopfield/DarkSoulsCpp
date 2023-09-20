@@ -1,11 +1,9 @@
 #include "weapon.h"
 
 Weapon::Weapon()
+: name("Empty Weapon"), durability(100), damage(0.0)
 {
     cout << "Creating empty weapon\n";
-    this->setName("Empty Weapon");
-    this->setDurability(100);
-    this->setDamage(0.0);
 }
 
 /**
