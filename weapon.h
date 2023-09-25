@@ -35,7 +35,7 @@ private:
     double damage;
     int durability;
 
-    const size_t MAX_NAME_SIZE = 15;
+    const size_t NAME_MAX_SIZE = 15;
 };  
 
 #endif

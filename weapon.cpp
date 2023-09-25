@@ -38,10 +38,10 @@ void Weapon::setName(string name)
         return;
     }
 
-    if (name.size() > this->MAX_NAME_SIZE)
+    if (name.size() > this->NAME_MAX_SIZE)
     {
-        cout << "Weapon can't be more than " << MAX_NAME_SIZE << " characters!\n";
-        this->name = name.substr(0, MAX_NAME_SIZE);
+        cout << "Weapon can't be more than " << NAME_MAX_SIZE << " characters!\n";
+        this->name = name.substr(0, NAME_MAX_SIZE);
         return;
     }
 
