@@ -33,6 +33,8 @@ private:
     string name;
     double damage;
     int durability;
+
+    const size_t MAX_NAME_SIZE = 15;
 };  
 
 #endif
