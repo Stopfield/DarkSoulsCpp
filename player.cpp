@@ -1,7 +1,7 @@
 #include "player.h"
 
 Player::Player( )
-: name("Empty Player"), health(100.0f), stamina(100.0), strength(100.0f)
+: name("Empty Player"), health(100.0f), stamina(100.0), strength(15.0f)
 {
     cout << "Creating empty player with default stats...\n";
 }
@@ -22,6 +22,22 @@ Player::Player( const Player& other )
     this->strength = other.strength;
 }
 
+/* Ataca um inimigo */
+void Player::attack()
+{
+    
+}
+
+/* Entra ou sai da postura de defesa */
+void Player::guard()
+{
+    if (!isGuarding)
+        cout << "Personagem entra em postura de defesa! Perde velocidade!\n";
+    else
+        cout << "Personagem sai da postura de defesa! Velocidade normal\n";
+    this->isGuarding = !this->isGuarding;
+}
+
 void Player::setName( string name )
 {
     /* Names can't be empty */
@@ -33,11 +49,11 @@ void Player::setName( string name )
     }
 
     /* Names can't be too long */
-    if (name.size() > this->NAME_MAX_STR)
+    if (name.size() > this->NAME_MAX_SIZE)
     {
-        string substr_name = name.substr(0, NAME_MAX_STR);
+        string substr_name = name.substr(0, NAME_MAX_SIZE);
         cout << "Player name can't be more than "
-             << NAME_MAX_STR << " chars long! "
+             << NAME_MAX_SIZE << " chars long! "
              << "Getting " << substr_name << " substring!";
 
         this->name = substr_name;
@@ -81,4 +97,10 @@ void Player::setStamina( double stamina )
         return;
     }
     this->stamina = stamina;
+}
+
+void Player::equipWeapon( Weapon& weapon )
+{
+    cout << "Personagem equipa " << weapon.getName() << "\n";
+    this->equipedWeapon = &weapon;
 }
