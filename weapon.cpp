@@ -17,6 +17,13 @@ Weapon::Weapon(string name, double damage, int durability)
     this->setDurability(durability);
 }
 
+Weapon::Weapon( const Weapon& other )
+{
+    this->name = other.name;
+    this->damage = other.damage;
+    this->durability = other.durability;
+}
+
 Weapon::~Weapon()
 {
     cout << "Destroying weapon " << this->name << "...\n";

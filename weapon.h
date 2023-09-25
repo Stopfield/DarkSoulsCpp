@@ -13,6 +13,7 @@ class Weapon
 public:
     Weapon();
     Weapon( string, double, int = 100 );
+    Weapon( const Weapon& );
     ~Weapon();
 
     string getName() const { return this->name; };
