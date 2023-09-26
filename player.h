@@ -28,7 +28,8 @@ public:
 
     /* Retornar um ponteiro constante é má prática! */
     /* Mas e uma referência constante?              */
-    const Weapon& getEquipedWeapon() const { return *equipedWeapon; }
+    const Weapon& getEquipedWeapon() const { return *this->equipedWeapon; }
+    bool isUnarmed() const { return (equipedWeapon == 0) ? true : false; }
 
     void setName	    ( string );
     void setHealth	    ( double );
@@ -42,7 +43,7 @@ private:
     double strength;
 
     /* Arma equipada pelo personagem */
-    Weapon* equipedWeapon;
+    Weapon* equipedWeapon = 0;
 
     bool isGuarding = false;
 
@@ -50,7 +51,6 @@ private:
 
     /* Máximo de um item que ele pode ter no inventário! */
     const size_t ITEM_MAX_STACK = 99;
-
 };
 
 #endif // PLAYER_h

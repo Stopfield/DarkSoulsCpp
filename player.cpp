@@ -1,7 +1,7 @@
 #include "player.h"
 
-Player::Player( )
-: name("Empty Player"), health(100.0f), stamina(100.0), strength(15.0f)
+Player::Player()
+    : name("Empty Player"), health(100.0f), stamina(100.0), strength(15.0f), equipedWeapon(0)
 {
     cout << "Creating empty player with default stats...\n";
 }
@@ -20,11 +20,17 @@ Player::Player( const Player& other )
     this->health = other.health;
     this->stamina = other.stamina;
     this->strength = other.strength;
+    this->equipedWeapon = other.equipedWeapon;
 }
 
 /* Ataca um inimigo */
 void Player::attack() const
 {
+    if (this->equipedWeapon == 0)
+    {
+        cout << "You have no weapon!\n";
+        return;
+    }
     this->equipedWeapon->inflictDamage(100);
 }
 
@@ -38,7 +44,13 @@ void Player::guard()
     this->isGuarding = !this->isGuarding;
 }
 
-void Player::setName( string name )
+void Player::equipWeapon( Weapon& weapon )
+{
+    cout << "Personagem equipa " << weapon.getName() << "\n";
+    this->equipedWeapon = &weapon;
+}
+
+void Player::setName(string name)
 {
     /* Names can't be empty */
     if (name.empty())
@@ -97,10 +109,4 @@ void Player::setStamina( double stamina )
         return;
     }
     this->stamina = stamina;
-}
-
-void Player::equipWeapon( Weapon& weapon )
-{
-    cout << "Personagem equipa " << weapon.getName() << "\n";
-    this->equipedWeapon = &weapon;
 }
