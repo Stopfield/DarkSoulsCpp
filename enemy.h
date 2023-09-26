@@ -1,5 +1,5 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef ENEMY_H
+#define ENEMY_H
 
 #include <iostream>
 #include <string>
@@ -8,17 +8,17 @@ using std::string;
 using std::cout;
 
 #include "weapon.h"
-#include "enemy.h"
+// #include "player.h"
 
-class Player
+class Enemy
 {
 public:
-    Player();
-    Player( string, double = 100.0f, double = 100.0f, double = 15.0f );
-    Player( const Player& );
+    Enemy();
+    Enemy( string, double = 100.0f, double = 100.0f, double = 15.0f );
+    Enemy( const Enemy& );
 
     void equipWeapon	( Weapon& );
-    void attack		    ( Enemy& ) const;
+    // void attack		    ( Player& ) const;
     void guard          ( );
 
     // Getters/Setters
@@ -54,4 +54,4 @@ private:
     const size_t ITEM_MAX_STACK = 99;
 };
 
-#endif // PLAYER_h
+#endif // ENEMY_H

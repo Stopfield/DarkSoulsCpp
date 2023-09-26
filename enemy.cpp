@@ -1,12 +1,12 @@
-#include "player.h"
+#include "enemy.h"
 
-Player::Player()
-    : name("Empty Player"), health(100.0f), stamina(100.0), strength(15.0f), equipedWeapon(0)
+Enemy::Enemy()
+    : name("Empty Enemy"), health(100.0f), stamina(100.0), strength(15.0f), equipedWeapon(0)
 {
-    cout << "Creating empty player with default stats...\n";
+    cout << "Creating empty enemy with default stats...\n";
 }
 
-Player::Player( string name, double health, double stamina, double strength )
+Enemy::Enemy( string name, double health, double stamina, double strength )
 {
     this->setName(name);
     this->setHealth(health);
@@ -14,7 +14,7 @@ Player::Player( string name, double health, double stamina, double strength )
     this->setStrenght(strength);
 }
 
-Player::Player( const Player& other )
+Enemy::Enemy( const Enemy& other )
 {
     this->name = other.name;
     this->health = other.health;
@@ -24,40 +24,40 @@ Player::Player( const Player& other )
 }
 
 /* Ataca um inimigo */
-void Player::attack( Enemy& enemy ) const
-{
-    if (this->equipedWeapon == 0)
-    {
-        cout << "You have no weapon!\n";
-        return;
-    }
-    double damage = this->equipedWeapon->inflictDamage(enemy.getHealth());
-    enemy.setHealth(damage);
-}
+// void Enemy::attack( Player& player ) const
+// {
+//     if (this->equipedWeapon == 0)
+//     {
+//         cout << "Enemy has no weapon!\n";
+//         return;
+//     }
+//     double damage = this->equipedWeapon->inflictDamage(player.getHealth());
+//     player.setHealth(damage);
+// }
 
 /* Entra ou sai da postura de defesa */
-void Player::guard()
+void Enemy::guard()
 {
     if (!isGuarding)
-        cout << "Personagem entra em postura de defesa! Perde velocidade!\n";
+        cout << "Inimigo entra em postura de defesa! Perde velocidade!\n";
     else
-        cout << "Personagem sai da postura de defesa! Velocidade normal\n";
+        cout << "Inimigo sai da postura de defesa! Velocidade normal\n";
     this->isGuarding = !this->isGuarding;
 }
 
-void Player::equipWeapon( Weapon& weapon )
+void Enemy::equipWeapon( Weapon& weapon )
 {
-    cout << "Personagem equipa " << weapon.getName() << "\n";
+    cout << "Inimigo equipa " << weapon.getName() << "\n";
     this->equipedWeapon = &weapon;
 }
 
-void Player::setName(string name)
+void Enemy::setName(string name)
 {
     /* Names can't be empty */
     if (name.empty())
     {
-        cout << "Player name can't be empty! Defaulting to \"Empty Player\"\n";
-        this->name = "Empty Player";
+        cout << "Enemy name can't be empty! Defaulting to \"Empty Enemy\"\n";
+        this->name = "Empty Enemy";
         return;
     }
 
@@ -65,7 +65,7 @@ void Player::setName(string name)
     if (name.size() > this->NAME_MAX_SIZE)
     {
         string substr_name = name.substr(0, NAME_MAX_SIZE);
-        cout << "Player name can't be more than "
+        cout << "Enemy name can't be more than "
              << NAME_MAX_SIZE << " chars long! "
              << "Getting " << substr_name << " substring!";
 
@@ -76,7 +76,7 @@ void Player::setName(string name)
     this->name = name;
 }
 
-void Player::setHealth( double health )
+void Enemy::setHealth( double health )
 {
     /* Health can't be negative */
     if (health < 0)
@@ -88,7 +88,7 @@ void Player::setHealth( double health )
     this->health = health;
 }
 
-void Player::setStrenght( double strength )
+void Enemy::setStrenght( double strength )
 {
     /* Strength can't be negative */
     if (strength < 0)
@@ -100,7 +100,7 @@ void Player::setStrenght( double strength )
     this->strength = strength;
 }
 
-void Player::setStamina( double stamina )
+void Enemy::setStamina( double stamina )
 {
     /* Stamina can't be negative */
     if (stamina < 0)

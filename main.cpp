@@ -1,12 +1,14 @@
 #include <iostream>
 
 #include "weapon.h"
+#include "enemy.h"
 #include "player.h"
 
 int main()
 {
     /* Player não constante - arma constante */
     Player player("Thiago");
+    Enemy undead("Undead", 550, 100, 25);
 
     // Criando uma espada com 253.3 de dano e durabilidade de 150
     Weapon espada("Astora Sword", 252.3, 150);
@@ -18,9 +20,14 @@ int main()
     std::cout << "Var: " << varWeapon->getName() << std::endl;
 
     // Pode atacar, não é constante
-    player.attack();
-
-    std::cout << player.getEquipedWeapon().getDurability() << std::endl;
+    if (!player.isUnarmed())
+    {
+        player.attack(undead);
+        std::cout << player.getName() << " ataca com "
+                    << player.getEquipedWeapon().getName() << "\n";
+    }
+    std::cout << "Undead HP: " << undead.getHealth() << "\n";
+    std::cout << "Durabilidade da Arma: " << player.getEquipedWeapon().getDurability() << std::endl;
 
     /* E com uma constante? */
     varWeapon = &draconian;
@@ -34,7 +41,7 @@ int main()
     const Player constancio("Constâncio");
 
     // A arma não é constante, então pode
-    constancio.attack();
+    constancio.attack(undead);
 
     // Sempre verificar se está sem equipamento
     if (!constancio.isUnarmed())
