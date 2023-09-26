@@ -16,9 +16,9 @@ public:
     Player( string, double = 100.0f, double = 100.0f, double = 15.0f );
     Player( const Player& );
 
-    void attack		    ( /* Enemy& */ );
-    void guard          ( );
     void equipWeapon	( Weapon& );
+    void attack		    ( /* Enemy& */ ) const;
+    void guard          ( );
 
     // Getters/Setters
     string getName()        const   { return this->name;     }
@@ -28,7 +28,7 @@ public:
 
     /* Retornar um ponteiro constante é má prática! */
     /* Mas e uma referência constante?              */
-    const Weapon& getEquipedWeapon() { return *equipedWeapon; }
+    const Weapon& getEquipedWeapon() const { return *equipedWeapon; }
 
     void setName	    ( string );
     void setHealth	    ( double );

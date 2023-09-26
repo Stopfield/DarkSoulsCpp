@@ -23,9 +23,9 @@ Player::Player( const Player& other )
 }
 
 /* Ataca um inimigo */
-void Player::attack()
+void Player::attack() const
 {
-    
+    this->equipedWeapon->inflictDamage(100);
 }
 
 /* Entra ou sai da postura de defesa */
