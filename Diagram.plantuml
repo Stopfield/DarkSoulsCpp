@@ -1,0 +1,92 @@
+@startuml Nome
+
+class Player {
+    - name : string
+    - health : double
+    - stamina : double
+    - strength : double
+    - guarding : bool
+    - equipedWeapon : Weapon*
+    - NAME_MAX_STR : const size_t 
+    - ITEM_MAX_STACK: const size_t
+    --
+    + Player()
+    + Player( name: string, health: double, stamina: double, strength: double )
+    + Player(const Player& other)
+    + ~Player()
+
+    + equipWeapon( Weapon& )
+    + attack( Enemy& )
+    + guard()
+    + grabItem()
+    + move()
+    + bool isUnarmed()
+    + bool isGuarding()
+    -- Gettes/Setters --
+    + string getName() const
+    + double getHealth() const
+    + double getStamina() const
+    + double getStrength() const
+    + const Weapon& getEquippedWeapon() const;
+    + setName(name: string)
+    + setHealth(health: double)
+    + setStamina(stamina: double)
+    + setStrenght(strength: double)
+}
+
+class Enemy {
+    - name : string
+    - health : double
+    - stamina : double
+    - strength : double
+    - guarding : bool
+    - equipedWeapon : Weapon*
+    - NAME_MAX_STR : const size_t 
+    --
+    + Enemy()
+    + Enemy( name: string, health: double, stamina: double, strength: double )
+    + Enemy(const Player& other)
+    + ~Enemy()
+
+    + equipWeapon( Weapon& )
+    + guard()
+    + bool isUnarmed()
+
+    -- Gettes/Setters --
+    + string getName() const
+    + double getHealth() const
+    + double getStamina() const
+    + double getStrength() const
+    + const Weapon& getEquippedWeapon() const;
+    + setName(name: string)
+    + setHealth(health: double)
+    + setStamina(stamina: double)
+    + setStrenght(strength: double)
+}
+
+class Weapon {
+    - name: string
+    - damage: double
+    - durability: int
+    - NAME_MAX_SIZE: const size_t
+    --
+    + Weapon()
+    + Weapon(name: string, damage: double, durability: int)
+    + Weapon(const Weapon&)
+    + ~Weapon()
+
+    + inflictDamage( Enemy& )
+    + printStatus() const
+    -- Gettes/Setters --
+    + string getName() const
+    + double getDamage() const
+    + double getDurability() const
+    + setName(name: string)
+    + setDamage(damage: double)
+    + setDurability(durability: int)
+}
+
+Weapon --o Player
+Weapon --o Enemy
+Enemy o-- Player
+@enduml
