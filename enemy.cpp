@@ -23,6 +23,11 @@ Enemy::Enemy( const Enemy& other )
     this->equipedWeapon = other.equipedWeapon;
 }
 
+Enemy::~Enemy()
+{
+    cout << "Destroying enemy " << this->getName() << "!\n";
+}
+
 /* Ataca um inimigo */
 // void Enemy::attack( Player& player ) const
 // {
@@ -38,11 +43,11 @@ Enemy::Enemy( const Enemy& other )
 /* Entra ou sai da postura de defesa */
 void Enemy::guard()
 {
-    if (!isGuarding)
+    if (!guarding)
         cout << "Inimigo entra em postura de defesa! Perde velocidade!\n";
     else
         cout << "Inimigo sai da postura de defesa! Velocidade normal\n";
-    this->isGuarding = !this->isGuarding;
+    this->guarding = !this->guarding;
 }
 
 void Enemy::equipWeapon( Weapon& weapon )
