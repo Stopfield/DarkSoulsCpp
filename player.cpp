@@ -38,17 +38,40 @@ void Player::attack( Enemy& enemy ) const
 /* Entra ou sai da postura de defesa */
 void Player::guard()
 {
-    if (!isGuarding)
+    if (!isGuarding())
         cout << "Personagem entra em postura de defesa! Perde velocidade!\n";
     else
         cout << "Personagem sai da postura de defesa! Velocidade normal\n";
-    this->isGuarding = !this->isGuarding;
+    this->guarding = !this->guarding;
 }
 
 void Player::equipWeapon( Weapon& weapon )
 {
     cout << "Personagem equipa " << weapon.getName() << "\n";
     this->equipedWeapon = &weapon;
+}
+
+void Player::grabItem()
+{
+    if (this->item > ITEM_MAX_STACK)
+    {
+        cout << "Quantidade máxima de itens batida!\n";
+        cout << "O item continua no chão!\n";
+        return;
+    }
+    this->item++;
+}
+
+/* Placeholder */
+void Player::move()
+{
+    if (isGuarding())
+    {
+        // Velocidade reduzida
+        this->position += this->velocity / 2;
+        return;
+    }
+    this->position += this->velocity;
 }
 
 void Player::setName(string name)
@@ -98,6 +121,25 @@ void Player::setStrenght( double strength )
         return;
     }
     this->strength = strength;
+}
+
+void Player::setVelocity(double velocity)
+{
+    if (velocity < 0.0f)
+    {
+        cout << "Velocidade não pode ser menor que zero\n";
+        this->velocity = 0.0f;
+        return;
+    }
+
+    if (velocity > 100.0f)
+    {
+        cout << "Velocidade não pode ser maior que cem\n";
+        this->velocity = 100.0f;
+        return;
+    }
+
+    this->velocity = velocity;
 }
 
 void Player::setStamina( double stamina )

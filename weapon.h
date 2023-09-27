@@ -16,19 +16,19 @@ public:
     Weapon( const Weapon& );
     ~Weapon();
 
-    string getName() const { return this->name; };
-    int getDurability() const { return this->durability; };
-    double getDamage() const { return this->damage; };
+    // TODO Botar a entidade aqui. Só placeholder
+    // void inflictDamage( /* FUTURO OBJETO */ );
+    double inflictDamage( double );
+    void printStatus() const;
+
+    string getName()    const { return this->name;          }
+    int getDurability() const { return this->durability;    }
+    double getDamage()  const { return this->damage;        }
 
     void setName( string );
     void setDurability( int );
     void setDamage( double );
 
-    // TODO Botar o inimigo aqui. Só placeholder
-    // void inflictDamage( /* FUTURO OBJETO */ );
-    double inflictDamage( double );
-
-    void printStatus() const;
 
 private:
     string name;
