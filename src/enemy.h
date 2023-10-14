@@ -33,11 +33,11 @@ public:
     inline static size_t getNameMaxSize()   { return Enemy::NAME_MAX_SIZE;  }
 
     static string chooseBodyPart();
-    static void enrageEnemy( Enemy& );
 
     void equipWeapon	( Weapon& );
     void attack		    ( Player& ) const;
     void guard          ( );
+    void enrageEnemy( Enemy& );
 
     /* Retornar um ponteiro constante é má prática! */
     /* Mas e uma referência constante?              */

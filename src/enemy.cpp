@@ -10,7 +10,6 @@ const array<string, 3> Enemy::BODY_PARTS {
     "Front", "Back", "Head"
 };
 
-
 /** 
  * @brief Pick a body part of an Enemy.
  * @return String representing body part

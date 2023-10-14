@@ -1,5 +1,4 @@
-@startuml Nome
-
+@startuml
 class Player {
     - name : string
     - health : double
@@ -7,9 +6,17 @@ class Player {
     - strength : double
     - guarding : bool
     - equipedWeapon : Weapon*
+    - numPlayers: uint
+    - inventory: pair< Item, short >*
+    - inventorySize: size_t
+    - inventoryIndex: size_t
+
     - NAME_MAX_STR : const size_t 
     - ITEM_MAX_STACK: const size_t
-    --
+    - INVENTORY_MIN_SIZE: const static size_t
+    - INVENTORY_REALLOC_RATE: const static float constexpr
+
+
     + Player()
     + Player( name: string, health: double, stamina: double, strength: double )
     + Player(const Player& other)
@@ -22,16 +29,11 @@ class Player {
     + move()
     + bool isUnarmed()
     + bool isGuarding()
-    -- Gettes/Setters --
-    + string getName() const
-    + double getHealth() const
-    + double getStamina() const
-    + double getStrength() const
-    + const Weapon& getEquippedWeapon() const;
-    + setName(name: string)
-    + setHealth(health: double)
-    + setStamina(stamina: double)
-    + setStrenght(strength: double)
+
+    - void allocateInventorySpace();
+    - std::pair<Item, short>* copyInventory( std::pair<Item, short>* , size_t);
+    - Weapon* copyWeapon( const Weapon* );
+
 }
 
 class Enemy {
@@ -42,7 +44,7 @@ class Enemy {
     - guarding : bool
     - equipedWeapon : Weapon*
     - NAME_MAX_STR : const size_t 
-    --
+    
     + Enemy()
     + Enemy( name: string, health: double, stamina: double, strength: double )
     + Enemy(const Player& other)
@@ -52,16 +54,6 @@ class Enemy {
     + guard()
     + bool isUnarmed()
 
-    -- Gettes/Setters --
-    + string getName() const
-    + double getHealth() const
-    + double getStamina() const
-    + double getStrength() const
-    + const Weapon& getEquippedWeapon() const;
-    + setName(name: string)
-    + setHealth(health: double)
-    + setStamina(stamina: double)
-    + setStrenght(strength: double)
 }
 
 class Weapon {
@@ -69,7 +61,7 @@ class Weapon {
     - damage: double
     - durability: int
     - NAME_MAX_SIZE: const size_t
-    --
+
     + Weapon()
     + Weapon(name: string, damage: double, durability: int)
     + Weapon(const Weapon&)
@@ -77,13 +69,6 @@ class Weapon {
 
     + inflictDamage( Enemy& )
     + printStatus() const
-    -- Gettes/Setters --
-    + string getName() const
-    + double getDamage() const
-    + double getDurability() const
-    + setName(name: string)
-    + setDamage(damage: double)
-    + setDurability(durability: int)
 }
 
 Weapon --o Player

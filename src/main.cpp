@@ -8,123 +8,100 @@
 int main()
 {
 
-    /* Exemplo 1*/
-    // Player thiago("Thiago");
-    // Enemy undead("Undead");
+    enum Armas {
+        PLAYER,
+        SKELETON,
+        BOSS
+    };
 
-    // Weapon astoraSword("Astora Sword", 10.0f);
-    // Weapon draconianSword("Draconian Sword", 15.0f);
+    Item* estusFlask = new Item("Estus Flask", "Cura personagem", 250.0f);
+    // Inicializa todo o array "armas" com zero
+    Weapon* armas[3] { 0 };
+    Player* player;
+    // Inicializa todo o array "inimigos" com zero
+    Enemy* inimigos[5] { 0 };
 
-    // undead.equipWeapon( astoraSword );
-    // thiago.equipWeapon( draconianSword );
+    armas[Armas::PLAYER] = new Weapon("Best Weapon", 200.0f, 250);
+    armas[Armas::SKELETON] = new Weapon("Rusted Weapon", 100.0f, 250);
+    armas[Armas::BOSS] = new Weapon("Dragon Spear", 315.0f, 250);
 
-    // std::cout << "Thiago: " << thiago.getHealth() << "\n";
-    // undead.attack(thiago);
-    // std::cout << "Thiago: " << thiago.getHealth() << "\n";
+    player = new Player("Ashen One", 450.0f, 150.0f, 25.0f);
+    player->equipWeapon(*armas[Armas::PLAYER]);
+
+    player->grabItem(*estusFlask);
+    player->grabItem(*estusFlask);
+
+    // Cria três skeletons
+    for (size_t i = 0; i < 3; ++i)
+    {
+        inimigos[i] = new Enemy("Skeleton", 750.0f);
+        inimigos[i]->equipWeapon(*armas[Armas::SKELETON]);
+    }
+
+    // Vamos batalhar com os esqueletos!
+    for (size_t i = 0; i < 3; ++i)
+    {
+        if (player->battle( *inimigos[i] ))
+        {
+            delete inimigos[i];
+            inimigos[i] = 0;
+            cout << "Venceu! Toma um Estus Flask!\n";
+            player->useItem(*estusFlask);
+        }
+        else
+        {
+            cout << "Game Over!\n";
+            break;
+        }
+    }
+
+    for (size_t i = 0; i < 3; ++i)
+        if (armas[i])
+            delete armas[i];
+
+    for (size_t i = 0; i < 5; ++i)
+        if (inimigos[i])
+            delete inimigos[i];
+
+    delete player;
+    delete estusFlask;
     
-    /* ==== Exemplo 1.5 ====*/
-    // std::cout << "Players: " << Player::getNumPlayers() << "\n";
-    // std::cout << "Enemies: " << Enemy::getNumEnemies() << "\n";
 
-    // Player thiago("Thiago");
-    // Enemy undead("Undead");
 
-    // std::cout << "Players: " << Player::getNumPlayers() << "\n";
-    // std::cout << "Enemies: " << Enemy::getNumEnemies() << "\n";
+    // Weapon bigSword("Big Sword", 257.6f);
 
-    // Player constancio("Constâncio");
-    // Enemy knight("Black Knight");
-
-    // std::cout << "Players: " << Player::getNumPlayers() << "\n";
-    // std::cout << "Enemies: " << Enemy::getNumEnemies() << "\n";
-
-    /* ==== Exemplo 2 ====*/
-    /* Tamanho máximo de string - static*/
-    // Player thiago("Thiago");
-    // Enemy undead("Undead");
-
-    // thiago.setName("Aaaaaaaaaaaaaaaaaaaaaaa");
-    // undead.setName("Bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
-
-    /* ==== Exemplo 3 ====*/
-    /* Número máximo de inimigos */
-
-    /* Assim ele cria os 5! */
-    // Enemy enemies[5];
-
-    // Enemy* enemies[65];
-
-    // for (int i = 0; i < 67; i++)
-    // {
-    //     std::cout << Enemy::getNumEnemies() << "\n";
-    //     enemies[i] = new Enemy();
-    // }
-
-    /* ==== Exemplo 4 ====*/
-    /* Batalha (While) */
-    /* Vitória */
-    // Player thiago("Thiago");
-    // Enemy* inimigo = new Enemy("Undead");
-
-    // Weapon astoraSword("Astora Sword", 15.5f);
-    // Weapon ironSpear("Iron Spear", 20.0f);
-    // Weapon greatSword("Great Sword", 200.0f);
-
-    // thiago.equipWeapon(ironSpear);
-    // inimigo->equipWeapon(astoraSword);
-
-    // if (thiago.battle(*inimigo))
-    //     cout << "VITÓRIA! >:) \n";
-    // else
-    //     cout << "Derrota! :( \n";
-
-    // delete inimigo;
-
-    // /* Derrota */
-    // std::cout << "\n\n===========================\n";
-    // std::cout << "Batalha com o Black Knight!\n";
-
-    // thiago.setHealth(100.0f);
-
-    // inimigo = new Enemy("Black Knight", 150.0f);
-    // inimigo->equipWeapon(greatSword);
-
-    // if (thiago.battle(*inimigo))
-    //     cout << "VITÓRIA! >:) \n";
-    // else
-    //     cout << "Derrota! :( \n";
-
-    // delete inimigo;
-
-    /* ==== Exemplo 5 ====*/
-    /* Utilização de item (for)*/
     // Item estusFlask("Estus Flask", "Recupera vida", 100.0f);
+    // Item bomba("Bomba", "Explode!", -50.0f);
+
+    // Item muitosItens[15] = {
+    //     Item("aaaa", "bbbb", 10.0f),
+    //     Item("xxx", "ccc", 10.0f),
+    //     Item("zzz", "ddd", 5.0f),
+    //     Item("lll", "vvv", 2.0f)
+    // };
 
     // Player thiago("Thiago");
+    // thiago.showInventory();
+
+    // for (size_t i = 0; i < 4; ++i)
+    //     thiago.grabItem(muitosItens[i]);
+
+    // thiago.showInventory();
     // thiago.grabItem(estusFlask);
     // thiago.showInventory();
 
-    // for (size_t i = 0; i < 10; i++)
-    //     thiago.grabItem(estusFlask);
+    // // Novo player
+    // thiago.equipWeapon(bigSword);
 
-    // cout << "Health: " << thiago.getHealth() << "\n";
-    // thiago.showInventory();
-    // thiago.useItem(estusFlask);
-    // cout << "Health: " << thiago.getHealth() << "\n";
-    // thiago.showInventory();
+    // Player solarKnight(thiago);
+    // solarKnight.setName("Astolfo");
+    // solarKnight.showInventory();
 
-    /* === Exemplo 6 === */
-    /* Enrage enemy! */
-
-    Enemy undead("Undead");
-    Enemy::enrageEnemy(undead);
-
-    Enemy* inimigos[5];
-    for (size_t i = 0; i < 4; i++)
-        inimigos[i] = new Enemy();
+    // // solarKnight.equipWeapon(bigSword);
+    // cout << "Endereço da arma no main: " << &bigSword << "\n";
+    // cout << "Endereço da arma (Astolfo): " << &solarKnight.getEquipedWeapon() << "\n";
+    // cout << "Endereço da arma (Thiago): " << &thiago.getEquipedWeapon() << "\n";
     
-    Enemy::enrageEnemy(undead);
-
 
     return 0;
 }

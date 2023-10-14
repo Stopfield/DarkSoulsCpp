@@ -58,13 +58,21 @@ public:
 
 private:
 
-    static uint numPlayers;
-    const static size_t NAME_MAX_SIZE = 20;
-    /* Máximo de um item que ele pode ter no inventário! */
-    const static size_t ITEM_MAX_STACK = 99;
+    void allocateInventorySpace();
+    std::pair<Item, short>* copyInventory( std::pair<Item, short>* , size_t);
+    Weapon* copyWeapon( const Weapon* );
 
-    vector< pair<Item, short> > inventory;
-    
+    static uint numPlayers;
+    const static size_t NAME_MAX_SIZE;
+    /* Máximo de um item que ele pode ter no inventário! */
+    const static size_t ITEM_MAX_STACK;
+    const static size_t INVENTORY_MIN_SIZE;
+    const static float INVENTORY_REALLOC_RATE;
+
+    pair< Item, short >* inventory;
+    size_t inventorySize = Player::INVENTORY_MIN_SIZE;
+    size_t inventoryIndex = 0;
+        
     string name;
     double health;
     double stamina;

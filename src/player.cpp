@@ -1,12 +1,18 @@
 #include "player.h"
 
 uint Player::numPlayers = 0;
+const size_t Player::NAME_MAX_SIZE = 20;
+const size_t Player::ITEM_MAX_STACK = 99;
+const size_t Player::INVENTORY_MIN_SIZE = 5;
+const float Player::INVENTORY_REALLOC_RATE = 1.5f;
 
 Player::Player()
     : name("Empty Player"),
     health(100.0f), stamina(100.0), strength(15.0f),
     equipedWeapon(0)
 {
+    // Cria um inventário com o tamanho mínimo!
+    this->inventory = new pair<Item, short> [Player::INVENTORY_MIN_SIZE];
     Player::numPlayers++;
 }
 
@@ -16,6 +22,7 @@ Player::Player( string name, double health, double stamina, double strength )
     this->setHealth(health);
     this->setStamina(stamina);
     this->setStrenght(strength);
+    this->inventory = new pair<Item, short> [Player::INVENTORY_MIN_SIZE];
     Player::numPlayers++;
 }
 
@@ -25,13 +32,22 @@ Player::Player( const Player& other )
     this->health = other.health;
     this->stamina = other.stamina;
     this->strength = other.strength;
-    this->equipedWeapon = other.equipedWeapon;
+    this->position = other.position;
+    this->equipedWeapon = copyWeapon(other.equipedWeapon);
+
+    this->inventory = copyInventory(other.inventory, other.inventorySize);
+    this->inventorySize = other.inventorySize;
+    this->inventoryIndex = other.inventoryIndex;
+    
     Player::numPlayers++;
 }
 
 Player::~Player()
 {
     Player::numPlayers--;
+    // Destrói o inventário
+    delete [] this->inventory;
+    delete this->equipedWeapon;
 }
 
 /* Ataca um inimigo */
@@ -72,19 +88,26 @@ void Player::guard()
  * @param item Item para ser adicionado ao inventário
 */
 void Player::grabItem(Item& item)
-{
-    for (pair<Item, short>& inventoryItem : this->inventory)
+{   
+    // Se o tamanho for menor
+    if (inventoryIndex == inventorySize - 1)
     {
-        if (inventoryItem.first.getName() == item.getName())
+        allocateInventorySpace();
+    }
+
+    // Vamos só até o índice já utilizado! Sabemos que não tem mais nada depois!
+    for (size_t i = 0; i < this->inventoryIndex; ++i)
+    {
+        if (this->inventory[i].first.getName() == item.getName())
         {
-            if (inventoryItem.second >= Player::ITEM_MAX_STACK)
+            if (this->inventory[i].second >= Player::ITEM_MAX_STACK)
                 return;
-            inventoryItem.second++;
+            this->inventory[i].second++;
             return;
         }
     }
 
-    this->inventory.push_back( std::make_pair( item, (short) 1 ) );
+    inventory[inventoryIndex++] = std::make_pair( item, (short) 1);
 }
 
 /**
@@ -93,27 +116,31 @@ void Player::grabItem(Item& item)
 */
 void Player::useItem(Item& item)
 {
-    for (pair<Item, short>& inventoryItem : this->inventory)
+    // Vamos só até o índice já utilizado! Sabemos que não tem mais nada depois!
+    for (size_t i = 0; i < this->inventoryIndex; ++i)
     {
-        if (inventoryItem.first.getName() == item.getName())
+        if (this->inventory[i].first.getName() == item.getName())
         {
-            if (inventoryItem.second <= 0)
+            if (this->inventory[i].second <= 0)
                 return;
-                
-            inventoryItem.second--;
-            this->setHealth(
-                this->getHealth() + inventoryItem.first.getHealQuantity()
-            );
             
+            this->inventory[i].second--;
+            this->setHealth(
+                this->getHealth() + this->inventory[i].first.getHealQuantity()
+            );
             return;
         }
-    }    
+    }  
 }
 
+/**
+ * Equipa uma arma
+ * @param weapon Arma a ser equipada - pegue da base de dados
+*/
 void Player::equipWeapon(Weapon &weapon)
 {
     cout << "Personagem equipa " << weapon.getName() << "\n";
-    this->equipedWeapon = &weapon;
+    this->equipedWeapon = new Weapon(weapon);
 }
 
 /**
@@ -162,12 +189,71 @@ void Player::move()
 void Player::showInventory()
 {
     cout << "===" << this->getName() << " 's Inventory ===\n";
-    for (std::pair< Item, short > item : this->inventory)
+    cout << "(Size: " << inventorySize << ")\n";
+    for (size_t i = 0; i < this->inventorySize; ++i)
     {
-        cout << item.first.getName() << "\t" << item.second << "\n";
+        cout << this->inventory[i].first.getName() << "\t" << this->inventory[i].second << "\n";
     }
     cout << "================================\n";
 }
+
+
+/**
+ * @brief Aloca mais espaço para o inventário.
+ * 
+ * Veja INVENTORY_REALLOC_RATE para a taxa de crescimento do vetor.
+ * 
+ * Cria um novo vetor na Heap para o inventário, repassa os valores
+ * do inventário para o novo espaço e, por fim, retorna o endereço
+ * desse novo espaço para o atributo da classe.
+ * */
+void Player::allocateInventorySpace()
+{
+    size_t newSize = size_t(inventorySize * INVENTORY_REALLOC_RATE);
+    cout << "Realloc to new size: " << newSize << "\n";
+    pair<Item, short>* newInventory = new pair<Item, short> [newSize];
+
+    // Passa os itens de um para o outro
+    for (size_t i = 0; i < inventorySize; ++i)
+        newInventory[i] = inventory[i];
+
+    delete [] inventory;
+    
+    inventory = newInventory;
+    inventorySize = newSize;
+    // Realocado!
+    cout << "Realocado!\n";
+}
+
+/**
+ * Aloca espaço e copia o conteúdo de um inventário para outro.
+ * @param otherInventory Inventário a ser copiado
+ * @param size Tamanho do inventário a ser copiado
+ * @return O ponteiro para o espaço alocado
+*/
+std::pair<Item, short>* Player::copyInventory(std::pair<Item, short>* otherInventory, size_t size)
+{
+    std::pair<Item, short>* newInventory = new std::pair<Item, short> [size] ;
+    cout << "size: " << size << "\n";
+    for (size_t i = 0; i < size; ++i)
+        newInventory[i] = otherInventory[i];
+    return newInventory;
+}
+
+/**
+ * Aloca memório na Heap e copia a arma de um Player para o outro.
+ * @param otherWeapon Arma do outro player
+ * @returns Ponteiro da memória alocada no Heap
+*/
+Weapon* Player::copyWeapon(const Weapon* otherWeapon )
+{
+    if (otherWeapon == 0)
+        return 0;
+    Weapon* newWeapon = new Weapon(*otherWeapon);
+    return newWeapon;
+}
+
+#pragma region Sets/Gets
 
 void Player::setName(string name)
 {
@@ -248,3 +334,5 @@ void Player::setStamina( double stamina )
     }
     this->stamina = stamina;
 }
+
+#pragma endregion
