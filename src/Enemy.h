@@ -15,8 +15,8 @@ using std::array;
 using std::rand;
 using std::time;
 
-#include "weapon.h"
-#include "player.h"
+#include "Weapon.h"
+#include "Player.h"
 
 class Player;
 

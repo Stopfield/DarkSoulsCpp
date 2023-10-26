@@ -1,107 +1,58 @@
 #include <iostream>
+#include <iomanip>
 
-#include "weapon.h"
-#include "enemy.h"
-#include "player.h"
+#include "Weapon.h"
+#include "Enemy.h"
+#include "Player.h"
 #include "Item.h"
+#include "Entity.h"
+#include "Attack.h"
+
+using std::cout;
 
 int main()
 {
+    Item estusFlask("Estus Flask", "Restaura vida", 100.0f);
+    Item bomb("Bomb", "Explodes", 0.0f);
 
-    enum Armas {
-        PLAYER,
-        SKELETON,
-        BOSS
-    };
+    Attack estocada("Estocada", 1.0f, 1.0f, " estoca a arma em ");
+    Attack estocada2("Estocada", 1.0f, 1.0f, " asdasdsadsa");
+    Attack empty;
 
-    Item* estusFlask = new Item("Estus Flask", "Cura personagem", 250.0f);
-    // Inicializa todo o array "armas" com zero
-    Weapon* armas[3] { 0 };
-    Player* player;
-    // Inicializa todo o array "inimigos" com zero
-    Enemy* inimigos[5] { 0 };
+    Weapon astoraSword("Astora Sword", 100.0f);
+    Weapon bigSword("Big Sword", 50.0f);
+    Weapon emptyWe;
 
-    armas[Armas::PLAYER] = new Weapon("Best Weapon", 200.0f, 250);
-    armas[Armas::SKELETON] = new Weapon("Rusted Weapon", 100.0f, 250);
-    armas[Armas::BOSS] = new Weapon("Dragon Spear", 315.0f, 250);
+    Entity thiago("Thiago");
+    Entity empty3;
+    thiago.equipWeapon( astoraSword );
 
-    player = new Player("Ashen One", 450.0f, 150.0f, 25.0f);
-    player->equipWeapon(*armas[Armas::PLAYER]);
+    Entity darkKnight("Dark Knight");
+    darkKnight.equipWeapon( bigSword );
 
-    player->grabItem(*estusFlask);
-    player->grabItem(*estusFlask);
+    thiago.grabItem( estusFlask );
+    thiago.grabItem( estusFlask );
+    thiago.grabItem( estusFlask );
+    thiago.grabItem( estusFlask );
 
-    // Cria três skeletons
-    for (size_t i = 0; i < 3; ++i)
-    {
-        inimigos[i] = new Enemy("Skeleton", 750.0f);
-        inimigos[i]->equipWeapon(*armas[Armas::SKELETON]);
-    }
+    thiago.grabItem( bomb );
+    thiago.grabItem( bomb );
+    thiago.grabItem( bomb );
 
-    // Vamos batalhar com os esqueletos!
-    for (size_t i = 0; i < 3; ++i)
-    {
-        if (player->battle( *inimigos[i] ))
-        {
-            delete inimigos[i];
-            inimigos[i] = 0;
-            cout << "Venceu! Toma um Estus Flask!\n";
-            player->useItem(*estusFlask);
-        }
-        else
-        {
-            cout << "Game Over!\n";
-            break;
-        }
-    }
+    cout << std::boolalpha << (bool) ( thiago == darkKnight ) << "\n";
+    cout << std::boolalpha << (bool) ( thiago != darkKnight ) << "\n";
 
-    for (size_t i = 0; i < 3; ++i)
-        if (armas[i])
-            delete armas[i];
+    thiago = darkKnight;
+    cout << std::boolalpha << (bool) ( thiago == darkKnight ) << "\n";
+    cout << std::boolalpha << (bool) ( thiago == darkKnight ) << "\n";
+    cout << std::boolalpha << (bool) ( !empty3 ) << "\n";
+    cout << std::boolalpha << (bool) ( !thiago ) << "\n";
 
-    for (size_t i = 0; i < 5; ++i)
-        if (inimigos[i])
-            delete inimigos[i];
 
-    delete player;
-    delete estusFlask;
+    thiago.showInventory();
+
     
 
-
-    // Weapon bigSword("Big Sword", 257.6f);
-
-    // Item estusFlask("Estus Flask", "Recupera vida", 100.0f);
-    // Item bomba("Bomba", "Explode!", -50.0f);
-
-    // Item muitosItens[15] = {
-    //     Item("aaaa", "bbbb", 10.0f),
-    //     Item("xxx", "ccc", 10.0f),
-    //     Item("zzz", "ddd", 5.0f),
-    //     Item("lll", "vvv", 2.0f)
-    // };
-
-    // Player thiago("Thiago");
-    // thiago.showInventory();
-
-    // for (size_t i = 0; i < 4; ++i)
-    //     thiago.grabItem(muitosItens[i]);
-
-    // thiago.showInventory();
-    // thiago.grabItem(estusFlask);
-    // thiago.showInventory();
-
-    // // Novo player
-    // thiago.equipWeapon(bigSword);
-
-    // Player solarKnight(thiago);
-    // solarKnight.setName("Astolfo");
-    // solarKnight.showInventory();
-
-    // // solarKnight.equipWeapon(bigSword);
-    // cout << "Endereço da arma no main: " << &bigSword << "\n";
-    // cout << "Endereço da arma (Astolfo): " << &solarKnight.getEquipedWeapon() << "\n";
-    // cout << "Endereço da arma (Thiago): " << &thiago.getEquipedWeapon() << "\n";
-    
-
+    // thiago.attack( darkKnight, estocada );
     return 0;
 }

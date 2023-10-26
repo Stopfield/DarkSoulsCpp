@@ -1,0 +1,111 @@
+@startuml
+class Game {
+   - gameDate: Data
+   - player: Player
+   - loadedEntities: vector< Enemy >
+   - loadedArea: string
+
+   - enemiesDatabase: vector< Enemy* >
+   - attacksDatabase: vector< Attack* >
+   - weaponsDatabase: vector< Weapon* >
+   
+   + initGame()
+   + mainLoop()
+   + input()
+
+   - loadGame()
+   - loadEnemies()
+   - loadAttacks()
+   - loadWeapons()
+}
+
+enum Direction{
+   + DOWN = 1
+   + UP = -1
+   + RIGHT = 1
+   + LEFT = -1
+}
+
+struct InventoryItem {
+    - item: Item
+    - quantity: short
+}
+
+struct Vector2D {
+    + x: int
+    + y: int
+}
+
+class Entity{
+    - name : string
+    - health : double
+    - stamina : double
+    - strength : double
+    - dexterity : double 'Taxa de regeneração da Stamina
+    - equipedWeaponPtr : Weapon*
+    - guarding : bool
+    - inventory : vector < InventoryItem* >
+    - position : Vector2D
+    - ITEM_MAX_STACK: const size_t
+    - NAME_MAX_SIZE : const size_t
+
+    + move( Direction )
+    + equipWeapon( Weapon& )
+
+    + attack( Entity& ) const
+    + battle( Entity& )
+    + guard()
+    + grabItem( Item& )
+    + useItem( Item& )
+
+    + isUnarmed()  const : bool
+    + isGuarding() const : bool
+
+    ' Aqui, a função pode simplesmente atribuir a um atributo privado direto, sem precisar retornar
+    - copyInventory( const vector <InventoryItem> )
+    - copyWeapon( const Weapon* );
+}
+
+class Player {
+    - numPlayers : uint
+    - attacks : vector< Attack >
+    + receiveInput()
+}
+
+class Enemy {
+    - numEnemies: uint
+    'O ataque e a probabilidade de usar o ataque em batalha!
+    - attacksAndProbabilities: map<Attack, double>
+}
+
+class Attack {
+    - damageModifier : double
+    - staminaCostModifier : double
+    - message : string
+}
+
+class Weapon {
+    - name: string
+    - damage: double
+    - durability: int
+    - NAME_MAX_SIZE: const size_t
+
+    + Weapon()
+    + Weapon(name: string, damage: double, durability: int)
+    + Weapon(const Weapon&)
+    + ~Weapon()
+
+    + inflictDamage( Enemy& )
+    + printStatus() const
+}
+
+Game *-- Player
+Game *-- Enemy
+Entity <|-- Player
+Entity <|-- Enemy
+Entity *-- Weapon
+Entity *-- InventoryItem
+Entity *-- Vector2D
+Enemy *-- Attack
+Player *-- Attack
+@enduml

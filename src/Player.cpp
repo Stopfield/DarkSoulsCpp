@@ -1,4 +1,4 @@
-#include "player.h"
+#include "Player.h"
 
 uint Player::numPlayers = 0;
 const size_t Player::NAME_MAX_SIZE = 20;

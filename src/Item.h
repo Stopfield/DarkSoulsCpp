@@ -6,15 +6,16 @@
 
 using std::cout;
 using std::string;
-
-/* HEALING ITEM - Mudar para herança e overload depois! */
+using std::ostream;
 
 class Item
 {
+    friend ostream& operator<<  ( ostream&, const Item& );
+    friend int      operator!   ( const Item& );
 public:
-    Item();
-    Item( string, string, double );
-    ~Item();
+    Item    ( );
+    Item    ( string, string, double );
+    ~Item   ( );
     
     inline string getName()         const { return this->name;          }
     inline string getDescription()  const { return this->description;   }
@@ -23,10 +24,17 @@ public:
     void setName            ( string );
     void setDescription     ( string );
     void setHealQuantity    ( double );
+
+    const Item& operator= ( const Item& );
+    int operator== ( const Item& );
+    int operator!= ( const Item& );
+
 private:
-    const static u_int8_t MAX_ITEM_STACK;
-    const static size_t MAX_NAME_SIZE = 20;
-    const static size_t MAX_DESCRIPTION_SIZE = 60;
+    const static u_int8_t   MAX_ITEM_STACK;
+    const static size_t     MAX_NAME_SIZE;
+    const static size_t     MAX_DESCRIPTION_SIZE;
+    const static string     DEFAULT_ITEM_NAME;
+    const static string     DEFAULT_DESCRIPTION;
 
     string name;
     string description;

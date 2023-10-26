@@ -1,4 +1,4 @@
-#include "enemy.h"
+#include "Enemy.h"
 
 /* Atributos static */
 const uint Enemy::MAX_NUM_ENEMIES = 64;

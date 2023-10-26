@@ -8,8 +8,8 @@ using std::string;
 using std::cout;
 using std::pair;
 
-#include "weapon.h"
-#include "enemy.h"
+#include "Weapon.h"
+#include "Enemy.h"
 #include "Item.h"
 
 class Enemy;
