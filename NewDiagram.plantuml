@@ -48,6 +48,7 @@ struct Vector2D {
 
 class Entity{
     - name : string
+    - maxHealth: double
     - health : double
     - stamina : double
     - strength : double
@@ -55,18 +56,27 @@ class Entity{
     - equipedWeaponPtr : Weapon*
     - guarding : bool
     - inventory : vector < InventoryItem* >
+    - bodyParts: vector < BodyPart >
     - position : Vector2D
+
     - ITEM_MAX_STACK: const size_t
     - NAME_MAX_SIZE : const size_t
+    - BODY_PART_DESC_MAX_SIZE: const size_t
+    - DEFAULT_NAME: string
 
     + move( Direction )
-    + equipWeapon( Weapon& )
-
-    + attack( Entity& ) const
-    + battle( Entity& )
+    + equipWeapon( const Weapon& )
+    + attack( Entity&, Attack& ) const
+    + receiveDamage( double )
+    + calculateDamageModifier(): double
+    + heal( double )
     + guard()
-    + grabItem( Item& )
+    + grabItem( const Item& )
     + useItem( Item& )
+    + useItem( size_t )
+   
+    + showInventory()
+    + chooseRandBodyPart(): const BodyPart&
 
     + isUnarmed()  const : bool
     + isGuarding() const : bool
@@ -74,25 +84,37 @@ class Entity{
     ' Aqui, a função pode simplesmente atribuir a um atributo privado direto, sem precisar retornar
     - copyInventory( const vector <InventoryItem> ) const
     - copyWeapon( const Weapon* const ) const
+    - isBodyPartValid( BodyPart& ): bool
 }
 
 class Player {
     - numPlayers : uint
-    - attacks : vector< Attack >
+    - attacks : vector< Attack* >
+
     + receiveInput()
+    + addAttack( Attack& )
+
+    - copyAttacks( const Player& )
+    - deleteAttacks()
 }
 
 class Enemy {
     - numEnemies: uint
-    'O ataque e a probabilidade de usar o ataque em batalha!
-    - attacksAndProbabilities: map<Attack, double>
+    - attacksAndProbabilities: map< short, Attack* >
+    - MAX_NUM_ENEMIES: static unsigned int
+    - MIN_ENEMIES_TO_RAGE: static unsingned int
     + chooseAttack()
+    + enrageEnemy( Enemy& )
 }
 
 class Attack {
+    - name: string
     - damageModifier : double
     - staminaCostModifier : double
-    - message : string
+    - displayMessage: string
+    - DISPLAY_MSG_MAX_SIZE: size_t
+    - NAME_MAX_SIZE: size_t
+    - DEFAULT_ATTACK_NAME: string
 }
 
 class Weapon {
@@ -100,14 +122,29 @@ class Weapon {
     - damage: double
     - durability: int
     - NAME_MAX_SIZE: const size_t
+    - DEFAULT_WEAPON_NAME: string
 
     + Weapon()
     + Weapon(name: string, damage: double, durability: int)
     + Weapon(const Weapon&)
     + ~Weapon()
 
-    + inflictDamage( Enemy& )
+    + inflictDamage( double )
+    + increaseDurability( double )
+    + decreaseDurability( int )
     + printStatus() const
+}
+
+class Item
+{
+    + name: string
+    + description: string
+    + healQuantity: double
+    + MAX_ITEM_STACK: u_int8_t
+    + MAX_NAME_SIZE: size_t
+    + MAX_DESCRIPTION_SIZE: size_t
+    + DEFAULT_ITEM_NAME: string
+    + DEFAULT_DESCRIPTION: string
 }
 
 Game *-- Player
@@ -117,4 +154,5 @@ Entity <|-- Enemy
 Entity *-- Weapon
 Enemy *-- Attack
 Player *-- Attack
+Item --* Entity
 @enduml
