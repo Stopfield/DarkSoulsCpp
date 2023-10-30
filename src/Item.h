@@ -15,6 +15,7 @@ class Item
 public:
     Item    ( );
     Item    ( string, string, double );
+    Item    ( const Item& );
     ~Item   ( );
     
     inline string getName()         const { return this->name;          }

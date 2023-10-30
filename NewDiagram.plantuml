@@ -19,11 +19,21 @@ class Game {
    - loadWeapons()
 }
 
+class Battle {
+    - player: Player
+    - enemy: Enemy
+    - turn: unsigned int
+
+    'Receive Player input and determine enemy attack
+    + planTurn()
+    + executeTurn()
+}
+
 enum Direction{
-   + DOWN = 1
-   + UP = -1
-   + RIGHT = 1
-   + LEFT = -1
+   + UP
+   + RIGHT
+   + DOWN
+   + LEFT
 }
 
 struct InventoryItem {
@@ -62,8 +72,8 @@ class Entity{
     + isGuarding() const : bool
 
     ' Aqui, a função pode simplesmente atribuir a um atributo privado direto, sem precisar retornar
-    - copyInventory( const vector <InventoryItem> )
-    - copyWeapon( const Weapon* );
+    - copyInventory( const vector <InventoryItem> ) const
+    - copyWeapon( const Weapon* const ) const
 }
 
 class Player {
@@ -76,6 +86,7 @@ class Enemy {
     - numEnemies: uint
     'O ataque e a probabilidade de usar o ataque em batalha!
     - attacksAndProbabilities: map<Attack, double>
+    + chooseAttack()
 }
 
 class Attack {
@@ -104,8 +115,6 @@ Game *-- Enemy
 Entity <|-- Player
 Entity <|-- Enemy
 Entity *-- Weapon
-Entity *-- InventoryItem
-Entity *-- Vector2D
 Enemy *-- Attack
 Player *-- Attack
 @enduml

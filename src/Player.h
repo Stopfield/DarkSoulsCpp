@@ -6,85 +6,34 @@
 
 using std::string;
 using std::cout;
-using std::pair;
 
-#include "Weapon.h"
-#include "Enemy.h"
-#include "Item.h"
+#include "Entity.h"
 
-class Enemy;
-class Item;
-
-class Player
+class Player : public Entity
 {
 public:
     Player();
-    Player( string, double = 100.0f, double = 100.0f, double = 15.0f );
+    Player( string,
+            double = 100.0f,
+            double = 100.0f,
+            double = 50.0f,
+            double = 25.0f,
+            Vector2D = { 0 },
+            vector< BodyPart > = DEFAULT_ENTITY_BODY_PARTS );
     Player( const Player& );
     ~Player();
 
-    inline static uint getNumPlayers()      { return Player::numPlayers;    };
-    inline static size_t getNameMaxSize()   { return Player::NAME_MAX_SIZE; };
-
-    void equipWeapon	( Weapon& );
-    bool battle         ( Enemy& );
-    void attack		    ( Enemy& ) const;
-    void guard          ( );
-    void grabItem       ( Item& );
-    void useItem        ( Item& );
-    void move           ( );
-    void showInventory  ( );
-
-    inline bool isUnarmed() const { return (equipedWeapon == 0) ? true : false; }
-
-    // Getters/Setters
-    inline string getName()        const   { return this->name;        }
-    inline double getHealth()      const   { return this->health;      }
-    inline double getStamina()     const   { return this->stamina;     }
-    inline double getStrength()    const   { return this->strength;    }
-    inline double getVelocity()    const   { return this->velocity;    }
-    inline double getPosition()    const   { return this->position;    }
-    inline bool isGuarding()       const   { return this->guarding;    }
-
-    /* Retornar um ponteiro constante é má prática! */
-    /* Mas e uma referência constante?              */
-    inline Weapon& getEquipedWeapon() const { return *this->equipedWeapon; }
-
-    void setName	    ( string );
-    void setHealth	    ( double );
-    void setStamina	    ( double );
-    void setStrenght	( double );
-    void setVelocity    ( double );
+    // void receiveInput   ( );
+    void addAttack      ( Attack& );
+ 
+    inline static uint getNumPlayers() { return Player::numPlayers; };
 
 private:
+    void copyAttacks        ( const Player& );
+    void deleteAttacks      (  );
 
-    void allocateInventorySpace();
-    std::pair<Item, short>* copyInventory( std::pair<Item, short>* , size_t);
-    Weapon* copyWeapon( const Weapon* );
-
-    static uint numPlayers;
-    const static size_t NAME_MAX_SIZE;
-    /* Máximo de um item que ele pode ter no inventário! */
-    const static size_t ITEM_MAX_STACK;
-    const static size_t INVENTORY_MIN_SIZE;
-    const static float INVENTORY_REALLOC_RATE;
-
-    pair< Item, short >* inventory;
-    size_t inventorySize = Player::INVENTORY_MIN_SIZE;
-    size_t inventoryIndex = 0;
-        
-    string name;
-    double health;
-    double stamina;
-    double strength;
-    double velocity = 100.0;
-    // Placeholder - substituir com Vector3
-    double position = 0.0f;
-
-    /* Arma equipada pelo personagem */
-    Weapon* equipedWeapon = 0;
-
-    bool guarding = false;
+    static unsigned int numPlayers;
+    vector< Attack* >   attacks;        // É melhor um ponteiro de ataques ou só ataques?
 };
 
 #endif // PLAYER_h

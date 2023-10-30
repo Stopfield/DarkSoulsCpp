@@ -1,0 +1,9 @@
+[ATTACK]
+    name=Destroyer
+    damage_modifier=1.0
+    stamina_cost_modifier=1.0
+    display_message
+    [MESSAGE]
+        " throws a rock!"
+    [END MESSAGE]
+[END ATTACK]

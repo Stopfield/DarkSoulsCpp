@@ -5,78 +5,45 @@
 #include <vector>
 #include <array>
 #include <string>
-#include <cstdlib>
 #include <ctime>
+#include <map>
 
-using std::string;
 using std::cout;
 using std::vector;
-using std::array;
 using std::rand;
 using std::time;
 
-#include "Weapon.h"
-#include "Player.h"
+#include "Entity.h"
 
-class Player;
-
-class Enemy
+class Enemy : public Entity
 {
 public:
     Enemy   ();
-    Enemy   ( string, double = 100.0f, double = 100.0f, double = 15.0f );
+    Enemy   (   string,
+                double = 100.0f,
+                double = 100.0f,
+                double = 50.0f,
+                double = 25.0f,
+                Vector2D = { 0 },
+                vector< BodyPart > = DEFAULT_ENTITY_BODY_PARTS,
+                map< short, Attack * > = { } );
     Enemy   ( const Enemy& );
-    ~Enemy  ();
+    ~Enemy  ( );
 
     /* Métodos static não podem ser const */
-    inline static uint getNumEnemies()      { return Enemy::numEnemies;     }
-    inline static size_t getNameMaxSize()   { return Enemy::NAME_MAX_SIZE;  }
+    inline static unsigned short getNumEnemies() { return Enemy::numEnemies; }
 
-    static string chooseBodyPart();
-
-    void equipWeapon	( Weapon& );
-    void attack		    ( Player& ) const;
-    void guard          ( );
-    void enrageEnemy( Enemy& );
-
-    /* Retornar um ponteiro constante é má prática! */
-    /* Mas e uma referência constante?              */
-    inline const Weapon& getEquipedWeapon() const { return *this->equipedWeapon; }
-    inline bool isUnarmed() const { return (equipedWeapon == 0) ? true : false; }
-    inline bool isGuarding() const { return this->guarding; }
-
-    // Getters/Setters
-    inline string getName()        const   { return this->name;     }
-    inline double getHealth()      const   { return this->health;   }
-    inline double getStamina()     const   { return this->stamina;  }
-    inline double getStrength()    const   { return this->strength; }
-
-    void setName	    ( string );
-    void setHealth	    ( double );
-    void setStamina	    ( double );
-    void setStrenght	( double );
+    Attack& chooseAttack    (  );
+    void enrageEnemy        ( Enemy& )  const;
 
 private:
+    const static unsigned int   MAX_NUM_ENEMIES;
+    const static unsigned short MIN_ENEMIES_TO_RAGE;
+    
+    static unsigned short numEnemies;
 
-    /* Atributos static também ficam no private! */
-    const static array<string, 3> BODY_PARTS;
-    const static uint MAX_NUM_ENEMIES;
-    const static size_t NAME_MAX_SIZE;
-    const static ushort MIN_ENEMIES_TO_RAGE;
-
-    static uint numEnemies;
-
-    string name;
-    double health;
-    double stamina;
-    double strength;
-    bool guarding = false;
-
-    /* Arma equipada pelo personagem */
-    Weapon* equipedWeapon = 0;
-
-    /* Máximo de um item que ele pode ter no inventário! */
-    // const size_t ITEM_MAX_STACK = 99;
+    //Isso é o melhor jeito de fazer as coisas? 
+    map< short, Attack* > probabilitiesAndAttacks;
 };
 
 #endif // ENEMY_H

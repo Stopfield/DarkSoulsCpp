@@ -30,7 +30,6 @@ public:
     int operator==          ( const Attack& );
     int operator!=          ( const Attack& );
 
-
 private:
     const static size_t DISPLAY_MSG_MAX_SIZE;
     const static size_t NAME_MAX_SIZE;

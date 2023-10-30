@@ -19,6 +19,13 @@ Item::Item( string name, string description, double healQuantity)
     this->setHealQuantity(healQuantity);
 }
 
+Item::Item( const Item& other )
+{
+    this->name = other.name;
+    this->description = other.description;
+    this->description = other.description;
+}
+
 Item::~Item() {}
 
 #pragma region Setters

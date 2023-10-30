@@ -1,0 +1,9 @@
+[PLAYER]
+    name=Skeleton
+    max_health=100.0
+    health=100.0
+    stamina=15.0
+    strength=35.0
+    dexterity=20.0
+    date=10/10/2000
+[END_PLAYER]

@@ -1,0 +1,5 @@
+[WEAPON]
+    name=Hammer
+    damage=10.0
+    durability=50
+[END WEAPON]

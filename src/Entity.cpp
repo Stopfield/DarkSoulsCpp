@@ -71,7 +71,6 @@ Entity::~Entity()
                 delete item;
 }
 
-
 /**
  * Move a entidade através da matriz
  * @param where Direcão baseada no Enum Direction

@@ -22,33 +22,7 @@ using std::map;
     { "FRONT", 1.0f }, \
     { "BACK", 1.5f  } }
 
-enum Direction {
-    DOWN,
-    UP,
-    RIGHT,
-    LEFT
-};
-
-/* Item dentro de um inventário */
-struct InventoryItem
-{
-    Item item;
-    short quantity;
-};
-
-/* Posicao da Entidade no plano s*/
-struct Vector2D
-{
-    int x;
-    int y;
-};
-
-/* Parte do corpo do inimigo. Varia de inimigo para inimigo. */
-struct BodyPart
-{
-    string partDescription;
-    double damageModifier;
-};
+#include "EntityDetails.h"
 
 /**
  * Classe que abstrai tudo que se move e pode batalhar!
@@ -110,9 +84,9 @@ public:
     void setPosition    ( Vector2D );
     void setBodyParts   ( vector< BodyPart >& );
 
-    const Entity& operator=   ( const Entity& );
-    int operator==  ( const Entity& );
-    int operator!=  ( const Entity& );
+    const Entity&   operator=   ( const Entity& );
+    int             operator==  ( const Entity& );
+    int             operator!=  ( const Entity& );
 
 private:
 
@@ -140,4 +114,4 @@ private:
     Vector2D position;                      // Posicão no plano
 };
 
-#endif
+#endif // ENTITY_H
