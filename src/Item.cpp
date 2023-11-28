@@ -6,23 +6,21 @@ const size_t    Item::MAX_DESCRIPTION_SIZE  = 60;
 const string    Item::DEFAULT_ITEM_NAME     = "Empty Item";
 const string    Item::DEFAULT_DESCRIPTION   = "Nothing";
 
-Item::Item()
-    : name(Item::DEFAULT_ITEM_NAME),
-    description(Item::DEFAULT_DESCRIPTION), healQuantity(0.0f)
+Item::Item() : GameObject()
 {
+    this->name = Item::DEFAULT_ITEM_NAME;
+    this->description = Item::DEFAULT_DESCRIPTION;
 }
 
-Item::Item( string name, string description, double healQuantity)
+Item::Item( string name, string description) : GameObject()
 {
     this->setName(name);
     this->setDescription(description);
-    this->setHealQuantity(healQuantity);
 }
 
-Item::Item( const Item& other )
+Item::Item( const Item& other ) : GameObject( static_cast<GameObject> (other) )
 {
     this->name = other.name;
-    this->description = other.description;
     this->description = other.description;
 }
 
@@ -64,16 +62,6 @@ void Item::setDescription(string description)
     this->description = description;
 }
 
-void Item::setHealQuantity(double healQuantity)
-{
-    if (healQuantity <= 0)
-    {
-        this->healQuantity = 0;
-        return;
-    }
-    this->healQuantity = healQuantity;
-}
-
 #pragma endregion
 
 #pragma region OperatorOverloads
@@ -95,7 +83,6 @@ const Item& Item::operator= ( const Item& right )
     {
         this->name = right.name;
         this->description = right.description;
-        this->healQuantity = right.healQuantity;
     }
     return *this;
 }

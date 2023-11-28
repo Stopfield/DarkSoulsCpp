@@ -8,27 +8,27 @@ using std::cout;
 using std::string;
 using std::ostream;
 
-class Item
+#include "GameObject.h"
+
+class Item : public GameObject
 {
     friend ostream& operator<<  ( ostream&, const Item& );
     friend int      operator!   ( const Item& );
 public:
-    Item    ( );
-    Item    ( string, string, double );
-    Item    ( const Item& );
-    ~Item   ( );
+    Item            ( );
+    Item            ( string, string );
+    Item            ( const Item& );
+    virtual ~Item   ( );
     
     inline string getName()         const { return this->name;          }
     inline string getDescription()  const { return this->description;   }
-    inline double getHealQuantity() const { return this->healQuantity;  }
 
     void setName            ( string );
     void setDescription     ( string );
-    void setHealQuantity    ( double );
 
-    const Item& operator= ( const Item& );
-    int operator== ( const Item& );
-    int operator!= ( const Item& );
+    const Item& operator=   ( const Item& );
+    int         operator==  ( const Item& );
+    int         operator!=  ( const Item& );
 
 private:
     const static u_int8_t   MAX_ITEM_STACK;
@@ -39,7 +39,6 @@ private:
 
     string name;
     string description;
-    double healQuantity;
 };
 
 #endif
