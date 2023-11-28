@@ -9,7 +9,9 @@ using std::cout;
 using std::endl;
 using std::ostream;
 
-class Weapon
+#include "Item.h"
+
+class Weapon : public Item
 {
     friend ostream& operator<<  ( ostream&, const Weapon& );
     friend int      operator!   (const Weapon& );
@@ -17,32 +19,26 @@ public:
     Weapon();
     Weapon( string, double, int = 100 );
     Weapon( const Weapon& );
-    ~Weapon();
+    virtual ~Weapon();
 
-    double  inflictDamage       ( double );
     void    increaseDurability  ( double );
     void    decreaseDurability  ( int );
-    void    printStatus         ( ) const;
 
-    string getName()    const { return this->name;          }
     int getDurability() const { return this->durability;    }
     double getDamage()  const { return this->damage;        }
 
-    void setName        ( string );
     void setDurability  ( int );
     void setDamage      ( double );
 
     const Weapon& operator= ( const Weapon& );
-    int operator== ( const Weapon& );
-    int operator!= ( const Weapon& );
+    int operator==          ( const Weapon& );
+    int operator!=          ( const Weapon& );
 
-private:
-    const static size_t NAME_MAX_SIZE;
+protected:
     const static string DEFAULT_WEAPON_NAME;
 
-    string  name;
     double  damage;
     int     durability;
 };  
 
-#endif
+#endif // WEAPON_H

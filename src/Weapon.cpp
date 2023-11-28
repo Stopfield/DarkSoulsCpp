@@ -1,18 +1,18 @@
 #include "Weapon.h"
 
-const size_t Weapon::NAME_MAX_SIZE          = 15;
 const string Weapon::DEFAULT_WEAPON_NAME    = "Empty Weapon";
 
-Weapon::Weapon()
-: name(Weapon::DEFAULT_WEAPON_NAME), damage(0.0f), durability(100.0f)
+Weapon::Weapon() : Item()
 {
-    // cout << "Creating empty weapon\n";
+    this->setName( Weapon::DEFAULT_WEAPON_NAME );
+    this->setDamage( 0.0f );
+    this->setDurability( 100 );
 }
 
 /**
  * A ordem de inicialização no .h é importante!
 */
-Weapon::Weapon(string name, double damage, int durability)
+Weapon::Weapon(string name, double damage, int durability) : Item()
 {
     // cout << "Creating weapon " << name << "...\n";
     this->setName(name);
@@ -20,7 +20,7 @@ Weapon::Weapon(string name, double damage, int durability)
     this->setDurability(durability);
 }
 
-Weapon::Weapon( const Weapon& other )
+Weapon::Weapon( const Weapon& other ) : Item( static_cast<Weapon> (other) )
 {
     this->name = other.name;
     this->damage = other.damage;
@@ -29,22 +29,6 @@ Weapon::Weapon( const Weapon& other )
 
 Weapon::~Weapon()
 {
-    // cout << "Destroying weapon " << this->name << "...\n";
-}
-
-/* Legado */
-double Weapon::inflictDamage(double enemyLife)
-{
-    if (this->durability > 0)
-    {
-        if (enemyLife <= 0)
-            cout << "O inimigo já morreu!\n";
-
-        this->setDurability(this->durability - 1);
-        return enemyLife - this->damage;
-    }
-    cout << "A espada está quebrada! Não dá dano\n";
-    return enemyLife;
 }
 
 /**
@@ -69,42 +53,12 @@ void Weapon::decreaseDurability( int amount )
     this->setDurability( this->durability - amount );
 }
 
-/* Legado */
-void Weapon::printStatus() const
-{
-    cout << "\n======   WEAPON   =====\n";
-    cout << "* " << this->name << "\n";
-    cout << "* Damage: \t" << this->damage << "\n";
-    cout << "* Durability: \t" << this->durability << "\n";
-    cout << "======   WEAPON   =====\n\n";
-}
-
 #pragma region Setters
-
-void Weapon::setName(string name)
-{
-    if (name.empty())
-    {
-        // cout << "Weapon name can't be empty! Defaulting to \"Empty Weapon\"";
-        this->name = "Empty Weapon";
-        return;
-    }
-
-    if (name.size() > Weapon::NAME_MAX_SIZE)
-    {
-        // cout << "Weapon can't be more than " << NAME_MAX_SIZE << " characters!\n";
-        this->name = name.substr(0, Weapon::NAME_MAX_SIZE);
-        return;
-    }
-
-    this->name = name;
-}
 
 void Weapon::setDamage(double damage)
 {
     if (damage < 0)
     {
-        // cout << "Damage can't be negative! Defaulting to zero\n";
         this->damage = 0;
         return;
     }
@@ -115,7 +69,6 @@ void Weapon::setDurability(int durability)
 {
     if (durability < 0)
     {
-        // cout << "Durability can't be negative! Defaulting to 0\n";
         this->durability = 0;
         return;
     }
@@ -144,7 +97,7 @@ const Weapon& Weapon::operator= (const Weapon& right)
 {
     if (&right != this)
     {
-        this->name = right.name;
+        static_cast<Item> (*this) = static_cast<Item> (right);
         this->damage = right.damage;
         this->durability = right.durability;
     }
@@ -153,9 +106,7 @@ const Weapon& Weapon::operator= (const Weapon& right)
 
 int Weapon::operator== (const Weapon& right )
 {
-    if (this->name == right.name)
-        return 1;
-    return 0;
+    return ( static_cast<Item> (*this) == static_cast<Item> (right) );
 }
 
 int Weapon::operator!= (const Weapon& right)

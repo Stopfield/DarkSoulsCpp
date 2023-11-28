@@ -30,7 +30,7 @@ public:
     int         operator==  ( const Item& );
     int         operator!=  ( const Item& );
 
-private:
+protected:
     const static u_int8_t   MAX_ITEM_STACK;
     const static size_t     MAX_NAME_SIZE;
     const static size_t     MAX_DESCRIPTION_SIZE;

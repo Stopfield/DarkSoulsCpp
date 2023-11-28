@@ -81,6 +81,7 @@ const Item& Item::operator= ( const Item& right )
 {
     if (&right != this)
     {
+        static_cast<GameObject> (*this) = static_cast<GameObject> (right);
         this->name = right.name;
         this->description = right.description;
     }
@@ -88,7 +89,7 @@ const Item& Item::operator= ( const Item& right )
 }
 
 int Item::operator== ( const Item& right )
-{
+{    
     if (this->name == right.name)
         return 1;
     return 0;
