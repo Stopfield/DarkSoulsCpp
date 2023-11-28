@@ -1,6 +1,26 @@
 #include "Consumable.h"
 
-void Consumable::setHealthFactor( double ratio )
+Consumable::Consumable() : Item()
+{
+    this->health_factor = 1.0;
+}
+
+Consumable::Consumable(string name, string description, double health_factor)
+    : Item( name, description )
+{
+    this->setHealthFactor( health_factor );
+}
+
+Consumable::Consumable(const Consumable& other) : Item( static_cast<Item> (other) )
+{
+    this->health_factor = other.health_factor;
+}
+
+Consumable::~Consumable()
+{
+}
+
+void Consumable::setHealthFactor(double ratio)
 {
     if (ratio < 1.0)
         this->health_factor = 1.0;

@@ -37,4 +37,4 @@ protected:
     char representation;
 };
 
-#endif
+#endif // GAME_OBJECT_H

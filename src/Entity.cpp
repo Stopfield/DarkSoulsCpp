@@ -6,17 +6,17 @@ const size_t Entity::BODY_PART_DESC_MAX_SIZE    = 8;
 const string Entity::DEFAULT_NAME               = "Empty Entity";
 
 /* Cria uma Entidade vazia com valores padrão */
-Entity::Entity()
+Entity::Entity() : GameObject(  )
 {
     this->name      = Entity::DEFAULT_NAME;
     this->health    = 100.0f;
+    this->maxHealth = 100.0f;
     this->stamina   = 100.0f;
     this->strength  = 50.0f;
     this->dexterity = 25.0f;
 
     this->guarding = false;
-    this->equipedWeaponPtr = 0;
-    this->position = Vector2D { 0 };
+    this->equiped_weapon_ptr = 0;
     this->bodyParts = DEFAULT_ENTITY_BODY_PARTS;
     this->inventory = vector< InventoryItem* > ();
 }
@@ -27,23 +27,22 @@ Entity::Entity( string name,
                 double strength,
                 double dexterity,
                 Vector2D position,
-                vector< BodyPart > bodyParts )
+                vector< BodyPart > bodyParts ) : GameObject( position, 'E' )
 {
     this->setName( name );
-    this->setHealth( health );
     this->setMaxHealth( health );
+    this->setHealth( health );
     this->setStamina( stamina );
     this->setStrength( strength );
     this->setDexterity( dexterity );
 
     this->guarding = false;
-    this->equipedWeaponPtr = 0;
-    this->setPosition( position );
+    this->equiped_weapon_ptr = 0;
 
     this->setBodyParts( bodyParts );
 }
 
-Entity::Entity( const Entity& other )
+Entity::Entity( const Entity& other ) : GameObject( static_cast<GameObject> (other) )
 {
     this->name = other.name;
     this->health = other.health;
@@ -53,17 +52,16 @@ Entity::Entity( const Entity& other )
 
     this->guarding = other.guarding;
 
-    this->copyWeapon( other.equipedWeaponPtr );
+    this->copyWeapon( other.equiped_weapon_ptr );
     this->copyInventory( other.inventory );
 
-    this->position = other.position;
     this->bodyParts = other.bodyParts;
 }
 
 Entity::~Entity()
 {
-    if (this->equipedWeaponPtr)
-        delete this->equipedWeaponPtr;
+    if (this->equiped_weapon_ptr)
+        delete this->equiped_weapon_ptr;
 
     if ( !this->inventory.empty() )
         for (auto& item : inventory )
@@ -81,25 +79,25 @@ void Entity::move( Direction where )
     {
     case UP:
         this->setPosition( 
-            Vector2D { this->position.x, this->position.y - 1 } 
+            Vector2D { this->position->x, this->position->y - 1 } 
         );
         break;
     
     case RIGHT:
         this->setPosition( 
-            Vector2D { this->position.x + 1, this->position.y } 
+            Vector2D { this->position->x + 1, this->position->y } 
         );
         break;
     
     case DOWN:
         this->setPosition( 
-            Vector2D { this->position.x, this->position.y + 1 } 
+            Vector2D { this->position->x, this->position->y + 1 } 
         );
         break;
 
     case LEFT:
         this->setPosition( 
-            Vector2D { this->position.x - 1, this->position.y } 
+            Vector2D { this->position->x - 1, this->position->y } 
         );
         break;
     
@@ -114,9 +112,9 @@ void Entity::move( Direction where )
 */
 void Entity::equipWeapon( const Weapon& weapon )
 {
-    if (this->equipedWeaponPtr)
-        delete this->equipedWeaponPtr;
-    this->equipedWeaponPtr = new Weapon( weapon );
+    if (this->equiped_weapon_ptr != 0)
+        delete this->equiped_weapon_ptr;
+    this->equiped_weapon_ptr = new Weapon( weapon );
 }
 
 /**
@@ -128,7 +126,7 @@ void Entity::equipWeapon( const Weapon& weapon )
 */
 void Entity::attack( Entity& other, const Attack& attack)
 {
-    if (this->equipedWeaponPtr == 0)
+    if (this->equiped_weapon_ptr == 0)
     {
         cout << "You are unarmed! Be careful! \n";
         return;
@@ -139,10 +137,10 @@ void Entity::attack( Entity& other, const Attack& attack)
 
     double dmgModifier =
         this->calculateDamageModifier() * attack.getDamageModifier() * randBodyPart.damageModifier;
-    double damage = this->equipedWeaponPtr->getDamage() * dmgModifier;
+    double damage = this->equiped_weapon_ptr->getDamage() * dmgModifier;
 
     other.receiveDamage( damage);
-    this->equipedWeaponPtr->decreaseDurability( 1 );
+    this->equiped_weapon_ptr->decreaseDurability( 1 );
 
     cout << this->name << " " << attack.getDisplayMessage() << "\n";
     cout << this->name << " acerta " << other.name
@@ -169,89 +167,17 @@ double Entity::calculateDamageModifier( )
     return ( (this->strength * 1.10) + (this->dexterity * 1.05) ) / 100;
 }
 
+
+
 /**
  * Escolhe uma parte aleatória da Entidade e a retorna.
  * @returns BodyPart escolhida aleatoriamente
 */
-const BodyPart& Entity::chooseRandBodyPart() const
+const BodyPart &Entity::chooseRandBodyPart() const
 {
     srand(time(NULL));
     size_t randIndex = rand() % this->bodyParts.size();
     return this->bodyParts[ randIndex ]; 
-}
-
-/**
- * Pega um item do chão e guarda no inventário.
- * Checa-se o nome dos itens e se já chegou na quantidade máxima.
- * Se não houver o item no inventário, alocamos um novo.
- * @param pickedItem Item a ser guardado.
-*/
-void Entity::grabItem( const Item& pickedItem )
-{
-    for (auto& itemAndQuantities : this->inventory )
-    {
-        if ( itemAndQuantities->item.getName() == pickedItem.getName() 
-            && itemAndQuantities->quantity < Entity::ITEM_MAX_STACK )
-        {
-            ++itemAndQuantities->quantity;
-            return;
-        }
-    }
-
-    this->inventory.push_back( new InventoryItem { pickedItem, 1 } );
-}
-
-/**
- * Mostra o inventário da Entidade. Onde não há espaco alocado,
- * apenas linhas são mostradas.
-*/
-void Entity::showInventory( ) const
-{
-    cout << " === " << this->getName() << " Inventory === \n";
-    for (const auto& item : this->inventory)
-    {
-        if (item == 0)
-        {
-            cout << " ------ \n";
-            continue;
-        }
-        cout << item->item << " | Qts: " << item->quantity << "\n";
-    }
-    cout << " ========================== \n";
-}
-
-/**
- * Usa um item do inventário.
- * @param item Item a ser usado
-*/
-void Entity::useItem( const Item& item )
-{
-    for (auto& itemAndQuantities : this->inventory)
-    {
-        if (itemAndQuantities->item.getName() == item.getName()
-            && itemAndQuantities->quantity > 0)
-        {
-            --itemAndQuantities->quantity;
-            this->heal(item.getHealQuantity());
-            return;
-        }
-    }
-}
-
-/**
- * Usa um item do inventário.
- * @param inventoryIndex Índice do item no inventário
-*/
-void Entity::useItem( size_t inventoryIndex )
-{
-    if (inventoryIndex >= 0 && inventoryIndex < this->inventory.size())
-    {
-        this->inventory.at( inventoryIndex )->item.getHealQuantity();
-        this->inventory.at( inventoryIndex )->quantity--;
-        return;
-    }
-    std::cerr << "Insert a valid index. Between 0 and "
-        << this->inventory.size() << "\n";
 }
 
 /**
@@ -270,6 +196,105 @@ void Entity::guard( )
     this->guarding = !this->guarding;
 }
 
+/**
+ * Pega um item do chão e guarda no inventário.
+ * Checa-se o nome dos itens e se já chegou na quantidade máxima.
+ * Se não houver o item no inventário, alocamos um novo.
+ * @param pickedItem Item a ser guardado.
+*/
+void Entity::grabItem( Item& picked_item )
+{   
+    for (auto& itemAndQuantities : this->inventory )
+    {
+        if ( itemAndQuantities->item->getName() == picked_item.getName()
+            && itemAndQuantities->quantity < Entity::ITEM_MAX_STACK )
+        {
+            ++itemAndQuantities->quantity;
+            return;
+        }
+    }
+
+    this->inventory.push_back( new InventoryItem { &picked_item, 1 } );
+}
+
+/**
+ * Usa um item do inventário.
+ * @param item Item a ser usado
+*/
+void Entity::useItem( Item& item_to_use )
+{
+    Consumable* consumable_ptr = dynamic_cast<Consumable*> (
+        &item_to_use
+    );
+
+    if (consumable_ptr == 0)
+    {
+        std::cerr << "You can't use " << item_to_use.getName()
+            << "! It's unconsumable!\n";
+        return;
+    }
+    
+    for (auto& itemAndQuantities : this->inventory)
+    {
+        if (itemAndQuantities->item->getName() == item_to_use.getName()
+            && itemAndQuantities->quantity > 0)
+        {
+            --itemAndQuantities->quantity;
+            return;
+        }
+    }
+    
+}
+
+/**
+ * Usa um item do inventário.
+ * @param inventory_index Índice do item no inventário
+*/
+void Entity::useItem( size_t inventory_index )
+{
+
+    Item* item_at_index = this->inventory.at( inventory_index )->item;
+    int item_qts        = this->inventory.at( inventory_index )->quantity;
+    
+    Consumable* consumable_ptr 
+        = dynamic_cast<Consumable*> ( item_at_index );
+    
+    if (consumable_ptr == 0)
+    {
+        std::cerr << "You can't use " << item_at_index->getName()
+            << "! It's unconsumable!\n";
+        return;
+    }
+    
+    if (inventory_index >= 0 && inventory_index < this->inventory.size()
+        && item_qts > 0 )
+    {
+        this->inventory.at( inventory_index )->quantity--;
+        return;
+    }
+    std::cout << "No more " << item_at_index->getName() << " left!\n";
+}
+
+/**
+ * Mostra o inventário da Entidade. Onde não há espaco alocado,
+ * apenas linhas são mostradas.
+*/
+void Entity::showInventory( ) const
+{
+    cout << " === " << this->getName() << " Inventory === \n";
+    for (const auto& inventory_item : this->inventory)
+    {
+        if (inventory_item == 0)
+        {
+            cout << " ------ \n";
+            continue;
+        }
+        cout << inventory_item->item->getName() << " - " << inventory_item->item->getDescription()
+            << " | Qts: " << inventory_item->quantity << "\n";
+    }
+    cout << " ========================== \n";
+}
+
 #pragma region PrivateMethods
 
 /**
@@ -280,10 +305,10 @@ void Entity::copyWeapon( const Weapon* const otherWeapon )
 {
     if (otherWeapon == 0)
     {
-        this->equipedWeaponPtr = 0;
+        this->equiped_weapon_ptr = 0;
         return;
     }
-    this->equipedWeaponPtr = new Weapon( *otherWeapon );
+    this->equiped_weapon_ptr = new Weapon( *otherWeapon );
 }
 
 /**
@@ -414,20 +439,6 @@ void Entity::setDexterity( double dexterity )
     this->dexterity = dexterity;
 }
 
-void Entity::setPosition( Vector2D position )
-{
-    int new_x = position.x;
-    int new_y = position.y;
-
-    if (position.x < 0)
-        new_x = 0;
-
-    if (position.y < 0)
-        new_y = 0;
-    
-    this->position = Vector2D { new_x, new_y }; 
-}
-
 void Entity::setBodyParts( vector< BodyPart >& bodyParts )
 {
     if (bodyParts.empty())
@@ -456,13 +467,13 @@ ostream &operator<<(ostream& output, const Entity& entity )
     output << "Stamina: " << entity.stamina << "\n";
     output << "Strength: " << entity.strength << "\n";
     output << "Dexterity: " << entity.dexterity;
-    if (entity.equipedWeaponPtr == 0)
+    if (entity.equiped_weapon_ptr == 0)
     {
         output << "\n === Weapon === \n";
         output << " Unarmed \n";
     }
     else
-        output << *entity.equipedWeaponPtr;
+        output << *entity.equiped_weapon_ptr;
     output << " === Body Parts === \n";
     for (const auto& part : entity.bodyParts)
         output << part.partDescription << "\n";
@@ -479,6 +490,7 @@ const Entity& Entity::operator= ( const Entity& right )
 {
     if (this != &right)
     {
+        static_cast<GameObject> (*this) = static_cast<GameObject> (right);
         this->name = right.name;
         this->maxHealth = right.maxHealth;
         this->health = right.health;
@@ -487,9 +499,8 @@ const Entity& Entity::operator= ( const Entity& right )
         this->dexterity = right.dexterity;
         this->bodyParts = right.bodyParts;
 
-        this->copyWeapon( right.equipedWeaponPtr );
+        this->copyWeapon( right.equiped_weapon_ptr );
         this->copyInventory( right.inventory );
-        this->position = right.position;
     }
     return *this;
 }

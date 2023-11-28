@@ -14,7 +14,9 @@ using std::map;
 
 #include "Weapon.h"
 #include "Item.h"
+#include "Consumable.h"
 #include "Attack.h"
+#include "GameObject.h"
 #include "EssentialStructs.h"
 
 /* Define as partes default de vector< BodyPart > */
@@ -28,21 +30,21 @@ using std::map;
 /**
  * Classe que abstrai tudo que se move e pode batalhar!
 */
-class Entity
+class Entity : public GameObject
 {
     friend ostream& operator<<  ( ostream&, const Entity& );
     friend int      operator!   ( const Entity& );
 public:
-    Entity          ( );
-    Entity          ( string,
-                      double = 100.0f, 
-                      double = 100.0f,
-                      double = 50.0f,
-                      double = 25.0f,
-                      Vector2D = { 0 },
-                      vector< BodyPart > = DEFAULT_ENTITY_BODY_PARTS );
-    Entity          ( const Entity& );
-    ~Entity         ( );
+    Entity                  ( );
+    Entity                  (   string,
+                                double = 100.0f, 
+                                double = 100.0f,
+                                double = 50.0f,
+                                double = 25.0f,
+                                Vector2D = { 0 },
+                                vector< BodyPart > = DEFAULT_ENTITY_BODY_PARTS );
+    Entity                  ( const Entity& );
+    virtual ~Entity         ( );
 
 
     void    move                        ( Direction );
@@ -52,8 +54,8 @@ public:
     double  calculateDamageModifier     (  );
     void    heal                        ( double );
     void    guard                       ( );
-    void    grabItem                    ( const Item& );
-    void    useItem                     ( const Item& );
+    void    grabItem                    ( Item& );
+    void    useItem                     ( Item& );
     void    useItem                     ( size_t );
 
     void showInventory                  ( ) const;
@@ -61,7 +63,7 @@ public:
 
     // void battle     ( Entity& );
 
-    inline bool isUnarmed()     const { return (equipedWeaponPtr == 0) ? true : false; }
+    inline bool isUnarmed()     const { return (equiped_weapon_ptr == 0) ? true : false; }
     inline bool isGuarding()    const { return this->guarding; }
 
     inline string   getName()           const   { return this->name;        }
@@ -69,12 +71,11 @@ public:
     inline double   getStrength()       const   { return this->strength;    }
     inline double   getStamina()        const   { return this->stamina;     }
     inline double   getDexterity()      const   { return this->dexterity;   }
-    inline Vector2D getPosition()       const   { return this->position;    }
 
     inline const vector<BodyPart>&          getBodyParts() const { return this->bodyParts; }
     inline const vector<InventoryItem*>&    getInventory() const { return this->inventory; }
     
-    inline const Weapon& getEquipedWeapon() const { return *this->equipedWeaponPtr; }
+    inline const Weapon& getEquipedWeapon() const { return *this->equiped_weapon_ptr; }
 
     void setName        ( string );
     void setHealth      ( double );
@@ -82,7 +83,6 @@ public:
     void setStrength    ( double );
     void setStamina     ( double );
     void setDexterity   ( double );
-    void setPosition    ( Vector2D );
     void setBodyParts   ( vector< BodyPart >& );
 
     const Entity&   operator=   ( const Entity& );
@@ -96,8 +96,8 @@ private:
     void copyInventory  ( const vector< InventoryItem* >& );
     void copyWeapon     ( const Weapon* const );
 
+    const static size_t NAME_MAX_SIZE;             // Máximo de um item que pode ser carregado
     const static size_t ITEM_MAX_STACK;             // Máximo de um item que pode ser carregado
-    const static size_t NAME_MAX_SIZE;              // Tamanho máximo da string do nome
     const static size_t BODY_PART_DESC_MAX_SIZE;    // Tamanho máximo da string do BodyPart
     const static string DEFAULT_NAME;               // Nome padrão de entidades não declaradas
 
@@ -110,9 +110,8 @@ private:
     bool guarding;
     vector< BodyPart > bodyParts;
 
-    Weapon* equipedWeaponPtr;               // Arma equipada pela entidade
+    Weapon* equiped_weapon_ptr = 0;               // Arma equipada pela entidade
     vector< InventoryItem* > inventory;     // Inventário da entidade
-    Vector2D position;                      // Posicão no plano
 };
 
 #endif // ENTITY_H

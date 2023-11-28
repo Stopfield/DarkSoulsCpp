@@ -20,7 +20,7 @@ Weapon::Weapon(string name, double damage, int durability) : Item()
     this->setDurability(durability);
 }
 
-Weapon::Weapon( const Weapon& other ) : Item( static_cast<Weapon> (other) )
+Weapon::Weapon( const Weapon& other ) : Item( static_cast<Item> (other) )
 {
     this->name = other.name;
     this->damage = other.damage;
