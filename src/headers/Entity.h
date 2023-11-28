@@ -15,6 +15,7 @@ using std::map;
 #include "Weapon.h"
 #include "Item.h"
 #include "Attack.h"
+#include "EssentialStructs.h"
 
 /* Define as partes default de vector< BodyPart > */
 #define DEFAULT_ENTITY_BODY_PARTS { \
