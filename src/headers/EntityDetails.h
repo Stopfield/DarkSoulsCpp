@@ -7,7 +7,7 @@
 /* Item dentro de um inventário */
 struct InventoryItem
 {
-    Item item;          // Item
+    Item* item;          // Item
     short quantity;     // Quantidade do Item
 };
 
