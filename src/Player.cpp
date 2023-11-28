@@ -2,7 +2,7 @@
 
 uint Player::numPlayers = 0;
 
-Player::Player()
+Player::Player() : Entity()
 {
     Player::numPlayers++;
 }
@@ -20,7 +20,7 @@ Player::Player( string name,
 }
 
 Player::Player( const Player& other )
-: Entity ( other )
+: Entity ( static_cast<Entity> (other) )
 {
     this->copyAttacks( other );
     Player::numPlayers++;
@@ -97,3 +97,39 @@ bool Player::battle(Enemy & enemy)
 }
 
 */
+
+ostream &operator<<(ostream& output, const Player& player)
+{
+    output << " * Player Entity" << player.getName() << " *\n";
+    output << static_cast<Entity> (player);
+    return output;
+}
+
+int operator!(const Player& player)
+{
+    return !( static_cast<Entity> ( player ) );
+}
+
+const Player &Player::operator=(const Player& other)
+{
+    if (this != &other)
+    {
+        static_cast<Entity> (*this) = static_cast<Entity> (other);
+
+        if (this->attacks.empty())
+            this->deleteAttacks();
+    
+        this->copyAttacks(other);
+    }
+    return *this;
+}
+
+int Player::operator==(const Player& other)
+{
+    return ( static_cast<Entity> ( *this ) == static_cast<Entity> (other) ) ;
+}
+
+int Player::operator!=(const Player& other)
+{
+    return !( *this == other );
+}

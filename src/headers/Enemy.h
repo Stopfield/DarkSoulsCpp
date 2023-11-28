@@ -17,6 +17,8 @@ using std::time;
 
 class Enemy : public Entity
 {
+    friend ostream& operator<<  ( ostream&, const Enemy& );
+    friend int      operator!   ( const Enemy& );
 public:
     Enemy   ();
     Enemy   (   string,
@@ -35,6 +37,10 @@ public:
 
     Attack& chooseAttack    (  );
     void enrageEnemy        ( Enemy& )  const;
+
+    const Enemy&    operator=   ( const Enemy& );
+    int             operator==  ( const Enemy& );
+    int             operator!=  ( const Enemy& );
 
 private:
     const static unsigned int   MAX_NUM_ENEMIES;

@@ -11,6 +11,8 @@ using std::cout;
 
 class Player : public Entity
 {
+    friend ostream& operator<<  ( ostream&, const Player& );
+    friend int      operator!   ( const Player& );
 public:
     Player();
     Player( string,
@@ -28,6 +30,10 @@ public:
  
     inline static uint getNumPlayers() { return Player::numPlayers; };
 
+    const Player&   operator=   ( const Player& );
+    int             operator==  ( const Player& );
+    int             operator!=  ( const Player& );
+
 private:
     void copyAttacks        ( const Player& );
     void deleteAttacks      (  );
@@ -36,4 +42,4 @@ private:
     vector< Attack* >   attacks;        // É melhor um ponteiro de ataques ou só ataques?
 };
 
-#endif // PLAYER_h
+#endif // PLAYER_H

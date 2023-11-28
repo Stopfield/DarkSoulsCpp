@@ -23,7 +23,7 @@ unsigned short          Enemy::numEnemies           = 0;
 //         << enemy.getName() << " is confident in victory! No Buffs!\n";
 // }
 
-Enemy::Enemy()
+Enemy::Enemy() : Entity()
 {
     /*
      * Para que o usuário seja impossibilitado de criar um novo objeto,
@@ -57,7 +57,7 @@ Enemy::Enemy(   string name,
     numEnemies++;
 }
 
-Enemy::Enemy( const Enemy& other )
+Enemy::Enemy( const Enemy& other ) : Entity( static_cast<Entity> (other) )
 {
     if (Enemy::numEnemies >= Enemy::MAX_NUM_ENEMIES)
         cout << "Number of enemies reached maximum value! Be careful!\n";
@@ -97,3 +97,34 @@ void Enemy::enrageEnemy(Enemy &) const
 //     double damage = this->equipedWeapon->inflictDamage(player.getHealth());
 //     player.setHealth(damage);
 // }
+
+ostream &operator<<(ostream& output, const Enemy& enemy)
+{
+    output << " * Enemy Entity" << enemy.getName() << " *\n";
+    output << static_cast<Entity> (enemy);
+    return output;
+}
+
+int operator!(const Enemy& enemy)
+{
+    return !( static_cast<Entity> ( enemy ) );
+}
+
+const Enemy &Enemy::operator=(const Enemy& other)
+{
+    if (this != &other)
+    {
+        static_cast<Entity> (*this) = static_cast<Entity> (other);
+    }
+    return *this;
+}
+
+int Enemy::operator==(const Enemy& other)
+{
+    return ( static_cast<Entity> ( *this ) == static_cast<Entity> (other) ) ;
+}
+
+int Enemy::operator!=(const Enemy& other)
+{
+    return !( *this == other );
+}
