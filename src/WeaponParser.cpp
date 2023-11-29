@@ -9,7 +9,7 @@ enum class WeaponParser::Attribute
 {
     DAMAGE, MIN_STRENGTH, MIN_DEXTERITY, DURABILITY,
     NAME, DESCRIPTION,
-    REPRESENTATION
+    BEFORE, AFTER
 };
 
 map< WeaponParser::LoadState, string > WeaponParser::load_state_matches = {
@@ -24,7 +24,8 @@ map< WeaponParser::Attribute, string > WeaponParser::attribute_matches = {
     { WeaponParser::Attribute::DURABILITY,      "durability"        },
     { WeaponParser::Attribute::NAME,            "name"              },
     { WeaponParser::Attribute::DESCRIPTION,     "description"       },
-    { WeaponParser::Attribute::REPRESENTATION,  "representation"    }
+    { WeaponParser::Attribute::BEFORE,          "before"            },
+    { WeaponParser::Attribute::AFTER,           "after"             }
 };
 
 /**
@@ -92,6 +93,16 @@ void WeaponParser::saveInStream(Weapon& item, std::ofstream& loaded_file_stream)
         << "="
         << item.getDamage()
         << "\n";
+    loaded_file_stream
+        << WeaponParser::attribute_matches[ Attribute::BEFORE ]
+        << "="
+        << item.getBefore()
+        << "\n";
+    loaded_file_stream
+        << WeaponParser::attribute_matches[ Attribute::AFTER ]
+        << "="
+        << item.getAfter()
+        << "\n";
 
     loaded_file_stream << WeaponParser::load_state_matches[ LoadState::END_WEAPON ] << "\n";
 }
@@ -150,9 +161,15 @@ Weapon *WeaponParser::parseFile( std::ifstream& input_stream )
             continue;
         }
 
-        if (line_key == WeaponParser::attribute_matches[ Attribute::REPRESENTATION ])
+        if (line_key == WeaponParser::attribute_matches[ Attribute::BEFORE ])
         {
-            new_weapon->setRepresentation( line_value[0] );
+            new_weapon->setBefore( line_value[0] );
+            continue;
+        }
+
+        if (line_key == WeaponParser::attribute_matches[ Attribute::AFTER ])
+        {
+            new_weapon->setAfter( line_value[0] );
             continue;
         }
     }

@@ -14,9 +14,10 @@ class Attack
 public:
     Attack  ();
     Attack  ( string, double, double, string );
-    Attack  ( Attack& );
+    Attack  ( const Attack& );
     ~Attack ();
 
+    inline string getName()                 const { return this->name;                  }
     inline double getDamageModifier()       const { return this->damageModifier;        }
     inline double getStaminaCostModifier()  const { return this->staminaCostModifier;   }
     inline string getDisplayMessage()       const { return this->displayMessage;        }

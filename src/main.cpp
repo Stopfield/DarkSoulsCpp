@@ -15,128 +15,141 @@
 #include "InventoryParser.h"
 #include "EntityParser.h"
 #include "BodyPartsParser.h"
+#include "AttackParser.h"
+#include "PlayerParser.h"
+#include "EnemyParser.h"
+
+#include "NormalBattle.h"
+#include "BossBattle.h"
 
 int main()
 {
-    // Consumable* estus_flask;
+    // Weapon espada_branca("Espada Branca", 15.5f, 150);
+    // Weapon lanca_da_lua("Lança da Lua", 10.25f, 250);
+    // Weapon espeta_coracao("Espeta Coração", 25.25f, 150);
+    // Weapon luz_ardente("Luz Ardente", 30.25f, 500);
 
-    // estus_flask = ConsumableParser::loadFromStream( "/home/thiago/new_dark_souls/Consumable.sav" );
+    // Attack giro_atomico( "Giro Atômico", 0.8f, 100.0f, "gira loucamente até gerar uma explosão nuclear!");
+    // Attack ataque_largo( "Ataque Largo", 0.5f, 0.25f, "ataca girando sua arma no ar!");
+    // Attack estocada( "Estocada", 2.5f, 0.15f, "estoca com sua arma!");
+    // Attack queda_da_lua( "Queda da Lua", 2.8f, 100.0f, "pula! É como se a lua estivesse caíndo do céu");
 
-    // if (!estus_flask)
-    //     std::cerr << "ERROR LOADING";
+    // // vector<Attack> thiago_ataques;
 
-    // std::cout << estus_flask->getHealthFactor() << "\n";
-    // std::cout << estus_flask->getRepresentation();
+    // Player thiago("Thiago");
+    // thiago.equipWeapon( espada_branca );
+    // thiago.setMaxHealth( 500.0f );
+    // thiago.heal( 500.0f );
 
-    // string file_path = "/home/thiago/new_dark_souls/Consumable.sav";
-    // Carregamento
-    // std::ifstream loadedFile ( file_path );
-
-    // Consumable* estus_flask;
-    // Consumable* teste;
-    // Consumable* bomba;
-    // estus_flask = ConsumableParser::loadFromStream( loadedFile );
-    // teste = ConsumableParser::loadFromStream( loadedFile );
-    // bomba = ConsumableParser::loadFromStream( loadedFile );
-
-    // std::cout << *estus_flask << "\n";
-    // std::cout << *teste << "\n";
-    // std::cout << *bomba << "\n";
-
-    // Consumable item("Qualquer texto", "Descrição");
-
-    // std::ofstream loaded_file_stream ( file_path );
-    // ConsumableParser::saveInStream( item, loaded_file_stream );
+    // thiago.addAttack( giro_atomico );
+    // thiago.addAttack( ataque_largo );
+    // thiago.addAttack( estocada );
     
-    // /* Carregamento */
-    // string file_path = "/home/thiago/new_dark_souls/Weapons.sav";
-    // std::ifstream loadedFile ( file_path );
-
-    // Weapon weapon_to_save;
-
-    // Weapon* new_weapon;
-    // new_weapon = WeaponParser::loadFromStream( loadedFile );
-    // /* Carregamento */
+    // Enemy jonas("Jonas");
+    // jonas.equipWeapon( lanca_da_lua );
 
 
-    // /* Salvamento */
-    // string file_path = "/home/thiago/new_dark_souls/Weapons.sav";
-    // std::ofstream loadedFile ( file_path );
+    // jonas.addAttackAndProbability( &ataque_largo, 25 );
+    // jonas.addAttackAndProbability( &estocada, 70 );
+    // jonas.addAttackAndProbability( &queda_da_lua, 5 );
 
-    // Weapon weapon_to_save;
 
-    // WeaponParser::saveInStream( weapon_to_save, loadedFile );
-    // /* Salvamento */
+    // // std::cout << batalha_do_seculo;
 
-    // string file_path = "/home/thiago/new_dark_souls/Armors.sav";
-    // std::ifstream loadedFile ( file_path );
+    // // batalha_do_seculo.planTurn( giro_atomico, estocada );
+    // // batalha_do_seculo.executeTurn();
 
-    // Armor* new_armor;
-    // new_armor = ArmorParser::loadFromStream( loadedFile );
+    // std::cout << "Jonas, seu maior inimigo está na sua frente com a lança da lua!\n";
+    // std::cout << "Faça o melhor para derrotá-lo!\n";
 
-    // std::cout << *new_armor;
+    // // NormalBattle batalha_do_seculo(thiago, jonas);
 
-    // delete new_armor;
+    // // char enter;
 
-    /* Inventory demonstration */
-    // Entity thiago;
-    // thiago.showInventory();
+    // // bool resultado = batalha_do_seculo.begin_battle();
 
-    // vector< InventoryItem* >* inventory_ptr;
+    // // if (resultado)
+    // // {
+    // //     system("clear");
+    // //     std::cout << "VOCÊ GANHOU!\n";
+    // //     std::cin >> enter;
+    // //     return 0;
+    // // }
+    // // system("clear");
+    // // std::cout << "GAME OVER\n";
+    // // std::cin >> enter ;
 
-    // string file_path = "/home/thiago/new_dark_souls/Inventory.sav";
-    // std::ifstream loaded_file (file_path);
-    // inventory_ptr = InventoryParser::loadFromStream( loaded_file );
-
-    // thiago.setInventory( inventory_ptr );
-
-    // thiago.showInventory();
-
-    // for (auto& i : *inventory_ptr)
-    // {
-    //     std::cout << i->quantity << "\n";
-    // }
-
-    // // std::cout << *inventory_ptr->at(3)->item;
-
-    /* Body Part parser*/
-    // string file_path = "/home/thiago/new_dark_souls/BodyPart.sav";
-
-    // Leitura
-    // std::ifstream loaded_file (file_path);
-    // BodyPart* part = BodyPartsParser::loadFromStream( loaded_file );
-
-    // std::cout << part->partDescription << " : " << part->damageModifier << "\n";
+    // string file_path = "/home/thiago/new_dark_souls/Attack.sav";
+    // std::ifstream load_stream ( file_path );
+    // Attack* new_attack = AttackParser::loadFromStream( load_stream );
     
-    // Salvamento
-    // std::ofstream loaded_file (file_path);
-    // BodyPart parte_nova { "HEAD", 10.0 };
-    // BodyPartsParser::saveInStream( parte_nova, loaded_file );
+    // std::cout << *new_attack;
 
-    // /* Salvamento Inventário */
-    // string save_file_path = "/home/thiago/new_dark_souls/InventoryNew.sav";
-    // string file_path = "/home/thiago/new_dark_souls/Inventory.sav";
-    // std::ofstream save_file     (save_file_path);
-    // std::ifstream loaded_file   (file_path);
+    /* Normal Battle - Demonstração */
+    // Weapon espada_branca("Espada Branca", 15.5f, 150);
+    // Weapon lanca_da_lua("Lança da Lua", 10.25f, 250);
+    // string hero_file_path = "/home/thiago/new_dark_souls/Hero.sav";
+    // string enemy_file_path = "/home/thiago/new_dark_souls/Enemy.sav";
+    // std::ifstream hero_load_stream  ( hero_file_path );
+    // std::ifstream enemy_load_stream ( enemy_file_path );
 
-    // vector< InventoryItem* >* inventory_ptr;
+    // Player* player_ptr = PlayerParser::loadFromStream( hero_load_stream );
+    // Enemy* enemy_ptr = EnemyParser::loadFromStream( enemy_load_stream );
 
-    // inventory_ptr = InventoryParser::loadFromStream( loaded_file );
-    
-    // InventoryParser::saveInStream( inventory_ptr, save_file );
+    // player_ptr->equipWeapon( lanca_da_lua );
+    // enemy_ptr->equipWeapon( espada_branca );
+
+    // std::cout << *player_ptr;
+    // std::cout << *enemy_ptr;
+
+    // NormalBattle batalha( *player_ptr, *enemy_ptr );
+
+    // batalha.begin_battle();
+
+    // ====================================================
+    /* Boss Battle - Demonstração */
+
+    /* Armas */
+    Weapon espada_branca("Espada Branca", 15.5f, 150);
+    Weapon lanca_da_lua("Lança da Lua", 10.25f, 250);
+    Weapon espeta_coracao("Espeta Coração", 25.25f, 150);
+    Weapon luz_ardente("Luz Ardente", 30.25f, 500);
+
+    /* Ataques */
+    Attack giro_atomico( "Giro Atômico", 0.8f, 100.0f, "gira loucamente até gerar uma explosão nuclear!");
+    Attack ataque_largo( "Ataque Largo", 0.5f, 0.25f, "ataca girando sua arma no ar!");
+    Attack estocada( "Estocada", 2.5f, 0.15f, "estoca com sua arma!");
+    Attack queda_da_lua( "Queda da Lua", 2.8f, 100.0f, "pula! É como se a lua estivesse caíndo do céu");
+
+    Player thiago("Thiago");
+    thiago.equipWeapon( espada_branca );
+    thiago.setMaxHealth( 500.0f );
+    thiago.heal( 500.0f );
+
+    thiago.addAttack( giro_atomico );
+    thiago.addAttack( ataque_largo );
+    thiago.addAttack( estocada );
+
+    /* Primeira fase */
+    Enemy cavaleiro_negro("Cavaleiro Negro");
+    cavaleiro_negro.equipWeapon( espeta_coracao );
+    cavaleiro_negro.addAttackAndProbability( &ataque_largo, 50 );
+    cavaleiro_negro.addAttackAndProbability( &giro_atomico, 2 );
+    cavaleiro_negro.addAttackAndProbability( &estocada,     80 );
+
+    /* Segunda fase */
+    Enemy cavaleiro_negro_alado("Cavaleiro Negro Alado");
+    cavaleiro_negro_alado.equipWeapon( luz_ardente );
+    cavaleiro_negro_alado.addAttackAndProbability( &queda_da_lua, 5 );
+    cavaleiro_negro_alado.addAttackAndProbability( &giro_atomico, 2 );
+    cavaleiro_negro_alado.addAttackAndProbability( &ataque_largo, 50 );
 
 
-    /* Entity Parser */
-    string load_file_path = "/home/thiago/new_dark_souls/Entity.sav";
-    string save_file_path = "/home/thiago/new_dark_souls/EntityNew.sav";
-    std::ifstream load_file_stream (load_file_path);
-    std::ofstream save_file_stream (save_file_path);
+    BossBattle batalha_com_cavaleiro_negro( thiago );
+    batalha_com_cavaleiro_negro.add_phase( cavaleiro_negro );       // Primeira fase
+    batalha_com_cavaleiro_negro.add_phase( cavaleiro_negro_alado ); // Segunda fase
 
-    Entity* thiago = EntityParser::loadFromStream( load_file_stream );
-    EntityParser::saveInStream( *thiago, save_file_stream );
-
-    std::cout << (*thiago) << "\n";
-    delete thiago;
+    batalha_com_cavaleiro_negro.begin_battle();
 
     return 0;
 }

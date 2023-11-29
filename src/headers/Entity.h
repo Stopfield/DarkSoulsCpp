@@ -57,6 +57,7 @@ public:
     void    grabItem                    ( Item& );
     void    useItem                     ( Item& );
     void    useItem                     ( size_t );
+    void    initializeRandomGenerator   (  );
 
     void showInventory                  ( ) const;
     const BodyPart& chooseRandBodyPart  ( ) const;
@@ -73,14 +74,14 @@ public:
     inline double   getStamina()        const   { return this->stamina;     }
     inline double   getDexterity()      const   { return this->dexterity;   }
 
-    inline const vector<BodyPart>&          getBodyParts() const { return this->bodyParts; }
+    inline vector<BodyPart>&          getBodyParts() { return this->bodyParts; }
     inline const vector<InventoryItem*>&    getInventory() const { return *this->inventory_ptr; }
     
     inline const Weapon& getEquipedWeapon() const { return *this->equiped_weapon_ptr; }
 
     void setName        ( string );
-    void setHealth      ( double );
     void setMaxHealth   ( double );
+    void setHealth      ( double );
     void setStrength    ( double );
     void setStamina     ( double );
     void setDexterity   ( double );
@@ -114,7 +115,7 @@ private:
     vector< BodyPart > bodyParts;
 
     Weapon* equiped_weapon_ptr = 0;                 // Arma equipada pela entidade
-    vector< InventoryItem* >* inventory_ptr;        // Inventário da entidade
+    vector< InventoryItem* >* inventory_ptr = 0;        // Inventário da entidade
 };
 
 #endif // ENTITY_H

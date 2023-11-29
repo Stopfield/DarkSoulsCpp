@@ -8,9 +8,9 @@ using std::cout;
 using std::string;
 using std::ostream;
 
-#include "GameObject.h"
+#include "Interactable.h"
 
-class Item : public GameObject
+class Item : public Interactable
 {
     friend ostream& operator<<  ( ostream&, const Item& );
     friend int      operator!   ( const Item& );

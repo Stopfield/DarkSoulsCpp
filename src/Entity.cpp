@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-const size_t Entity::NAME_MAX_SIZE              = 20;
+const size_t Entity::NAME_MAX_SIZE              = 35;
 const size_t Entity::ITEM_MAX_STACK             = 99;
 const size_t Entity::BODY_PART_DESC_MAX_SIZE    = 8;
 const string Entity::DEFAULT_NAME               = "Empty Entity";
@@ -36,10 +36,12 @@ Entity::Entity( string name,
     this->setStrength( strength );
     this->setDexterity( dexterity );
 
+
     this->guarding = false;
     this->equiped_weapon_ptr = 0;
 
     this->setBodyParts( bodyParts );
+    this->inventory_ptr = new vector< InventoryItem* >;
 }
 
 Entity::Entity( const Entity& other ) : GameObject( static_cast<GameObject> (other) )
@@ -63,12 +65,14 @@ Entity::~Entity()
     if (this->equiped_weapon_ptr)
         delete this->equiped_weapon_ptr;
 
+    if (this->inventory_ptr == 0)
+        return;
+
     if ( !this->inventory_ptr->empty() )
         for (auto& item : *inventory_ptr )
             if (item)
                 delete item;
-    
-    delete this->inventory_ptr;
+    // delete this->inventory_ptr;
 }
 
 /**
@@ -277,6 +281,15 @@ void Entity::useItem( size_t inventory_index )
     std::cout << "No more " << item_at_index->getName() << " left!\n";
 }
 
+void Entity::initializeRandomGenerator()
+{
+    std::random_device rd;
+    std::mt19937 gerador(rd());
+    std::uniform_int_distribution<int> distribuicao(1, 100);
+    int numeroAleatorio = distribuicao(gerador);
+
+}
+
 /**
  * Mostra o inventário da Entidade. Onde não há espaco alocado,
  * apenas linhas são mostradas.
@@ -321,11 +334,19 @@ void Entity::copyWeapon( const Weapon* const otherWeapon )
 */
 void Entity::copyInventory( const vector< InventoryItem* >* otherInventoryPtr )
 {
+    if (otherInventoryPtr == 0)
+    {
+        this->inventory_ptr = 0;
+        return;
+    }
+
     if (otherInventoryPtr->empty())
         return;
     
 
     this->deleteInventory();
+
+    this->inventory_ptr = new vector<InventoryItem*>;
     
     for (auto item : *otherInventoryPtr)
         this->inventory_ptr->push_back( new InventoryItem { item->item, item->quantity } );
@@ -337,6 +358,8 @@ void Entity::copyInventory( const vector< InventoryItem* >* otherInventoryPtr )
 */
 void Entity::deleteInventory()
 {
+    if (this->inventory_ptr == 0)
+        return;
     if (this->inventory_ptr->empty())
         return;
     

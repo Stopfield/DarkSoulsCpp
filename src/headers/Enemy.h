@@ -28,15 +28,18 @@ public:
                 double = 25.0f,
                 Vector2D = { 0 },
                 vector< BodyPart > = DEFAULT_ENTITY_BODY_PARTS,
-                map< short, Attack * > = { } );
+                map< int, Attack * > = { } );
     Enemy   ( const Enemy& );
-    ~Enemy  ( );
+    virtual ~Enemy  ( );
 
     /* Métodos static não podem ser const */
     inline static unsigned short getNumEnemies() { return Enemy::numEnemies; }
+    map< int, Attack* > *const getAttacksAndProbabilities() { return &this->probabilitiesAndAttacks; };
 
-    Attack& chooseAttack    (  );
-    void enrageEnemy        ( Enemy& )  const;
+
+    const Attack *const chooseAttack            (  );
+    void enrageEnemy                ( Enemy& )  const;
+    void addAttackAndProbability    ( Attack*, int );
 
     const Enemy&    operator=   ( const Enemy& );
     int             operator==  ( const Enemy& );
@@ -49,7 +52,7 @@ private:
     static unsigned short numEnemies;
 
     //Isso é o melhor jeito de fazer as coisas? 
-    map< short, Attack* > probabilitiesAndAttacks;
+    map< int, Attack* > probabilitiesAndAttacks;
 };
 
 #endif // ENEMY_H

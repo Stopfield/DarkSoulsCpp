@@ -66,7 +66,6 @@ void EntityParser::saveInStream(Entity& entity, std::ofstream& loaded_file_strea
     using LoadState = EntityParser::LoadState;
     using Attribute = EntityParser::Attribute;
 
-
     // // Pega o arquivo no último caractere
     // std::ofstream file ( file_path, std::ios::app | std::ios::ate );
 

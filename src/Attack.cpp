@@ -1,7 +1,7 @@
 #include "Attack.h"
 
 const size_t Attack::DISPLAY_MSG_MAX_SIZE   = 60;
-const size_t Attack::NAME_MAX_SIZE          = 10;
+const size_t Attack::NAME_MAX_SIZE          = 20;
 const string Attack::DEFAULT_ATTACK_NAME    = "Empty Attack";
 
 Attack::Attack()
@@ -23,7 +23,7 @@ Attack::Attack( string name,
     this->setDisplayMessage( displayMessage );
 }
 
-Attack::Attack( Attack& other )
+Attack::Attack( const Attack& other )
 {
     this->name = other.name;
     this->damageModifier = other.damageModifier;

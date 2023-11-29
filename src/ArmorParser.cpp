@@ -9,7 +9,7 @@ enum class ArmorParser::Attribute
 {
     DAMAGE_REDUCTION, MIN_STRENGTH, WEIGHT,
     NAME, DESCRIPTION,
-    REPRESENTATION
+    BEFORE, AFTER
 };
 
 map< ArmorParser::LoadState, string > ArmorParser::load_state_matches = {
@@ -23,7 +23,8 @@ map< ArmorParser::Attribute, string > ArmorParser::attribute_matches = {
     { ArmorParser::Attribute::WEIGHT,           "weight"            },
     { ArmorParser::Attribute::NAME,             "name"              },
     { ArmorParser::Attribute::DESCRIPTION,      "description"       },
-    { ArmorParser::Attribute::REPRESENTATION,   "representation"    }
+    { ArmorParser::Attribute::BEFORE,           "before"            },
+    { ArmorParser::Attribute::AFTER,            "after"             },
 };
 
 /**
@@ -56,16 +57,6 @@ void ArmorParser::saveInStream(Armor& item, std::ofstream& loaded_file_stream)
 {
     using LoadState = ArmorParser::LoadState;
     using Attribute = ArmorParser::Attribute;
-
-    // // Pega o arquivo no último caractere
-    // std::ofstream file ( file_path, std::ios::app | std::ios::ate );
-
-    // if (!file.is_open())
-    // {
-    //     std::cerr << "ERRO AO ABRIR ARQUIVO: " << file_path
-    //         << "! Durante salvamento de Consumable!\n";
-    //     exit( EXIT_FAILURE );
-    // }
     
     loaded_file_stream << "\n";
 
@@ -95,6 +86,16 @@ void ArmorParser::saveInStream(Armor& item, std::ofstream& loaded_file_stream)
         << ArmorParser::attribute_matches[ Attribute::WEIGHT ]
         << "="
         << item.getWeight()
+        << "\n";
+    loaded_file_stream
+        << ArmorParser::attribute_matches[ Attribute::BEFORE ]
+        << "="
+        << item.getBefore()
+        << "\n";
+    loaded_file_stream
+        << ArmorParser::attribute_matches[ Attribute::AFTER ]
+        << "="
+        << item.getAfter()
         << "\n";
 
     loaded_file_stream << ArmorParser::load_state_matches[ LoadState::END_ARMOR ] << "\n";
@@ -160,9 +161,15 @@ Armor* ArmorParser::parseFile( std::ifstream& input_stream )
             continue;
         }
         
-        if (line_key == ArmorParser::attribute_matches[ Attribute::REPRESENTATION ])
+        if (line_key == ArmorParser::attribute_matches[ Attribute::BEFORE ])
         {
-            new_armor->setRepresentation( line_value[0] );
+            new_armor->setBefore( line_value[0] );
+            continue;
+        }
+
+        if (line_key == ArmorParser::attribute_matches[ Attribute::AFTER ])
+        {
+            new_armor->setAfter( line_value[0] );
             continue;
         }
     }

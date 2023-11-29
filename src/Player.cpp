@@ -28,6 +28,7 @@ Player::Player( const Player& other )
 
 Player::~Player()
 {
+    std::cout << "Destrutor do Player\n" << std::endl;
     this->deleteAttacks();
     Player::numPlayers--;
 }
@@ -101,7 +102,8 @@ bool Player::battle(Enemy & enemy)
 ostream &operator<<(ostream& output, const Player& player)
 {
     output << " * Player Entity" << player.getName() << " *\n";
-    output << static_cast<Entity> (player);
+    // Static cast não funciona aqui???
+    output << *(dynamic_cast<const Entity*> (&player));
     return output;
 }
 

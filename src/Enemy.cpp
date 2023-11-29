@@ -29,6 +29,7 @@ Enemy::Enemy() : Entity()
      * Para que o usuário seja impossibilitado de criar um novo objeto,
      * é necessário criar uma função no main que impossibilite isso. 
     */
+    
     if (Enemy::numEnemies >= Enemy::MAX_NUM_ENEMIES)
         cout << "Number of enemies reached maximum value! Be careful!\n";
 
@@ -42,7 +43,7 @@ Enemy::Enemy(   string name,
                 double dexterity,
                 Vector2D position,
                 vector< BodyPart > bodyParts,
-                map< short, Attack* > attacks )
+                map< int, Attack* > attacks_and_probabilities )
 : Entity( name, health, stamina, strength, dexterity, position, bodyParts )
 {
     /*
@@ -52,16 +53,29 @@ Enemy::Enemy(   string name,
     if (Enemy::numEnemies >= Enemy::MAX_NUM_ENEMIES)
         cout << "Number of enemies reached maximum value! Be careful!\n";
 
-    probabilitiesAndAttacks = map< short, Attack* > ();
+    probabilitiesAndAttacks = map< int, Attack* > ();
 
     numEnemies++;
 }
 
 Enemy::Enemy( const Enemy& other ) : Entity( static_cast<Entity> (other) )
 {
+    std::cout << "Teste" << std::endl;
     if (Enemy::numEnemies >= Enemy::MAX_NUM_ENEMIES)
         cout << "Number of enemies reached maximum value! Be careful!\n";
     numEnemies++;
+
+    // Copia map
+    if (!other.probabilitiesAndAttacks.empty())
+    {
+        for ( auto& prob_and_attacks : other.probabilitiesAndAttacks )
+        {
+            std::cout << *prob_and_attacks.second << std::endl;
+            this->addAttackAndProbability(
+                new Attack (*prob_and_attacks.second), prob_and_attacks.first
+            );
+        }
+    }
 }
 
 Enemy::~Enemy()
@@ -75,15 +89,34 @@ Enemy::~Enemy()
 /**
  * Escolhe aleatoriamente um ataque do map.
 */
-Attack& Enemy::chooseAttack( )
+const Attack *const Enemy::chooseAttack( )
 {
-    short chance = rand() % 100;
-    Attack *const atk = this->probabilitiesAndAttacks[ chance ];
-    return *atk;
+    std::random_device rd;
+    std::mt19937 gerador(rd());
+    std::uniform_int_distribution<int> distribuicao(1, 100);
+    int chance = distribuicao(gerador);
+
+    Attack* chosen_attack = 0;
+
+    for (const auto& par : this->probabilitiesAndAttacks)
+    {
+        if (chance < par.first)
+        {
+            return par.second;
+        }
+        chosen_attack = par.second;
+    }
+
+    return chosen_attack;
 }
 
 void Enemy::enrageEnemy(Enemy &) const
 {
+}
+
+void Enemy::addAttackAndProbability( Attack* attack, int probability )
+{
+    probabilitiesAndAttacks[probability] = new Attack( *attack );
 }
 
 /* Ataca um inimigo */
@@ -101,7 +134,7 @@ void Enemy::enrageEnemy(Enemy &) const
 ostream &operator<<(ostream& output, const Enemy& enemy)
 {
     output << " * Enemy Entity" << enemy.getName() << " *\n";
-    output << static_cast<Entity> (enemy);
+    output << *(dynamic_cast<const Entity*> (&enemy));
     return output;
 }
 

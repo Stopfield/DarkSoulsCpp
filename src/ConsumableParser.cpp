@@ -9,7 +9,7 @@ enum class ConsumableParser::Attribute
 {
     HEALTH_FACTOR,
     NAME, DESCRIPTION,
-    REPRESENTATION
+    BEFORE, AFTER
 };
 
 map< ConsumableParser::LoadState, string > ConsumableParser::load_state_matches = {
@@ -19,9 +19,10 @@ map< ConsumableParser::LoadState, string > ConsumableParser::load_state_matches 
 
 map< ConsumableParser::Attribute, string > ConsumableParser::attribute_matches = {
     { ConsumableParser::Attribute::HEALTH_FACTOR,   "health_factor" },
-    { ConsumableParser::Attribute::NAME,            "name" },
-    { ConsumableParser::Attribute::DESCRIPTION,     "description" },
-    { ConsumableParser::Attribute::REPRESENTATION,  "representation" }
+    { ConsumableParser::Attribute::NAME,            "name"          },
+    { ConsumableParser::Attribute::DESCRIPTION,     "description"   },
+    { ConsumableParser::Attribute::BEFORE,          "before"        },
+    { ConsumableParser::Attribute::AFTER,           "after"         }
 };
 
 /**
@@ -84,9 +85,14 @@ void ConsumableParser::saveInStream(Consumable& item, std::ofstream& loaded_file
         << item.getHealthFactor()
         << "\n";
     loaded_file_stream
-        << ConsumableParser::attribute_matches[ Attribute::REPRESENTATION ]
+        << ConsumableParser::attribute_matches[ Attribute::BEFORE ]
         << "="
-        << item.getRepresentation()
+        << item.getBefore()
+        << "\n";
+    loaded_file_stream
+        << ConsumableParser::attribute_matches[ Attribute::AFTER ]
+        << "="
+        << item.getAfter()
         << "\n";
 
     loaded_file_stream << ConsumableParser::load_state_matches[ LoadState::END_CONSUMABLE ] << "\n";
@@ -140,9 +146,15 @@ Consumable *ConsumableParser::parseFile( std::ifstream& input_stream )
             continue;
         }
 
-        if (line_key == ConsumableParser::attribute_matches[ Attribute::REPRESENTATION ])
+        if (line_key == ConsumableParser::attribute_matches[ Attribute::BEFORE ])
         {
-            new_consumable->setRepresentation( line_value[0] );
+            new_consumable->setBefore( line_value[0] );
+            continue;
+        }
+
+        if (line_key == ConsumableParser::attribute_matches[ Attribute::AFTER ])
+        {
+            new_consumable->setAfter( line_value[0] );
             continue;
         }
     }

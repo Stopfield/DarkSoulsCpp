@@ -23,12 +23,13 @@ public:
             Vector2D = { 0 },
             vector< BodyPart > = DEFAULT_ENTITY_BODY_PARTS );
     Player( const Player& );
-    ~Player();
+    virtual ~Player();
 
     // void receiveInput   ( );
     void addAttack      ( Attack& );
  
-    inline static uint getNumPlayers() { return Player::numPlayers; };
+    inline static uint              getNumPlayers() { return Player::numPlayers;  };
+    inline vector<Attack*>          getAttacks()    const { return this->attacks;       };
 
     const Player&   operator=   ( const Player& );
     int             operator==  ( const Player& );

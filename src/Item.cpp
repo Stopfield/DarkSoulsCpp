@@ -6,19 +6,19 @@ const size_t    Item::MAX_DESCRIPTION_SIZE  = 60;
 const string    Item::DEFAULT_ITEM_NAME     = "Empty Item";
 const string    Item::DEFAULT_DESCRIPTION   = "Nothing";
 
-Item::Item() : GameObject()
+Item::Item() : Interactable()
 {
     this->name = Item::DEFAULT_ITEM_NAME;
     this->description = Item::DEFAULT_DESCRIPTION;
 }
 
-Item::Item( string name, string description) : GameObject()
+Item::Item( string name, string description) : Interactable()
 {
     this->setName(name);
     this->setDescription(description);
 }
 
-Item::Item( const Item& other ) : GameObject( static_cast<GameObject> (other) )
+Item::Item( const Item& other ) : Interactable( other )
 {
     this->name = other.name;
     this->description = other.description;
@@ -81,7 +81,7 @@ const Item& Item::operator= ( const Item& right )
 {
     if (&right != this)
     {
-        static_cast<GameObject> (*this) = static_cast<GameObject> (right);
+        static_cast<Interactable> (*this) = static_cast<Interactable> (right);
         this->name = right.name;
         this->description = right.description;
     }
