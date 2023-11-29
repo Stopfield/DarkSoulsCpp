@@ -67,13 +67,14 @@ public:
     inline bool isGuarding()    const { return this->guarding; }
 
     inline string   getName()           const   { return this->name;        }
+    inline double   getMaxHealth()      const   { return this->maxHealth;   }
     inline double   getHealth()         const   { return this->health;      }
     inline double   getStrength()       const   { return this->strength;    }
     inline double   getStamina()        const   { return this->stamina;     }
     inline double   getDexterity()      const   { return this->dexterity;   }
 
     inline const vector<BodyPart>&          getBodyParts() const { return this->bodyParts; }
-    inline const vector<InventoryItem*>&    getInventory() const { return this->inventory; }
+    inline const vector<InventoryItem*>&    getInventory() const { return *this->inventory_ptr; }
     
     inline const Weapon& getEquipedWeapon() const { return *this->equiped_weapon_ptr; }
 
@@ -83,6 +84,7 @@ public:
     void setStrength    ( double );
     void setStamina     ( double );
     void setDexterity   ( double );
+    void setInventory   ( const vector< InventoryItem* >* const );
     void setBodyParts   ( vector< BodyPart >& );
 
     const Entity&   operator=   ( const Entity& );
@@ -93,25 +95,26 @@ private:
 
     static bool isBodyPartValid( BodyPart& );
 
-    void copyInventory  ( const vector< InventoryItem* >& );
-    void copyWeapon     ( const Weapon* const );
+    void copyInventory      ( const vector< InventoryItem* >* const );
+    void deleteInventory    (  );
+    void copyWeapon         ( const Weapon* const );
 
     const static size_t NAME_MAX_SIZE;             // Máximo de um item que pode ser carregado
     const static size_t ITEM_MAX_STACK;             // Máximo de um item que pode ser carregado
     const static size_t BODY_PART_DESC_MAX_SIZE;    // Tamanho máximo da string do BodyPart
     const static string DEFAULT_NAME;               // Nome padrão de entidades não declaradas
 
-    string name;        // Nome que identifica identidade
-    double maxHealth;   // Vida máxima permitida pelo nível do personagem
-    double health;      // Vida atual da entidade
-    double stamina;     // Permite o ataque
-    double strength;    // Impacta no modificador de dano
-    double dexterity;   // O quão rápido a Stamina sobe
-    bool guarding;
+    string  name;        // Nome que identifica identidade
+    double  maxHealth;   // Vida máxima permitida pelo nível do personagem
+    double  health;      // Vida atual da entidade
+    double  stamina;     // Permite o ataque
+    double  strength;    // Impacta no modificador de dano
+    double  dexterity;   // O quão rápido a Stamina sobe
+    bool    guarding;
     vector< BodyPart > bodyParts;
 
-    Weapon* equiped_weapon_ptr = 0;               // Arma equipada pela entidade
-    vector< InventoryItem* > inventory;     // Inventário da entidade
+    Weapon* equiped_weapon_ptr = 0;                 // Arma equipada pela entidade
+    vector< InventoryItem* >* inventory_ptr;        // Inventário da entidade
 };
 
 #endif // ENTITY_H

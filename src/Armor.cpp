@@ -32,22 +32,34 @@ Armor::~Armor()
 
 #pragma region Setters
 
-void Armor::setDamageReduction(double ratio )
+void Armor::setDamageReduction( double ratio )
 {
     if (ratio < 0.0f)
+    {
         this->damage_reduction = 0.0f;
+        return;
+    }
+    this->damage_reduction = ratio;
 }
 
-void Armor::setMinStrength(double minimum)
+void Armor::setMinStrength( double minimum )
 {
     if (minimum < 0)
+    {
         this->min_strength = 0;
+        return;
+    }
+    this->min_strength = minimum;
 }
 
-void Armor::setWeight(double weight)
+void Armor::setWeight( double weight )
 {
     if (weight < 0)
+    {
         this->weight = 0;
+        return;
+    }
+    this->weight = weight;
 }
 
 #pragma endregion

@@ -10,7 +10,7 @@ map< PlayerAttributes, string > Game::player_ParserMatches = {
     { DEXTERITY,        "dexterity"         },
     { EQUIPPED_WEAPON,  "equipped_weapon"   },
     { DATE,             "date"              }   // Placeholder
-};
+};  
 
 /* String Matches para LoadState */
 map< LoadState, string > Game::loadState_ParserMatches = {
@@ -39,8 +39,8 @@ Game::Game( const string saveFilePath )
 
 Game::Game( const Game& other )
 {
-    this->playerPtr = new Player( *other.playerPtr );
-    this->gameDatePtr = new Data( *other.gameDatePtr );
+    this->playerPtr     = new Player( *other.playerPtr );
+    this->gameDatePtr   = new Data( *other.gameDatePtr );
     // TODO - Copy vectors
 }
 

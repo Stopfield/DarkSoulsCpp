@@ -41,4 +41,4 @@ private:
     string displayMessage;
 };
 
-#endif // ATTACK_H
+#endif

@@ -41,4 +41,4 @@ protected:
     string description;
 };
 
-#endif // ITEM_H
+#endif

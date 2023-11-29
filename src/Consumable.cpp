@@ -23,7 +23,11 @@ Consumable::~Consumable()
 void Consumable::setHealthFactor(double ratio)
 {
     if (ratio < 1.0)
+    {
         this->health_factor = 1.0;
+        return;
+    }
+    this->health_factor = ratio;
 }
 
 #pragma region OperatorOverloads

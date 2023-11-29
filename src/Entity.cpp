@@ -18,7 +18,7 @@ Entity::Entity() : GameObject(  )
     this->guarding = false;
     this->equiped_weapon_ptr = 0;
     this->bodyParts = DEFAULT_ENTITY_BODY_PARTS;
-    this->inventory = vector< InventoryItem* > ();
+    this->inventory_ptr = new vector< InventoryItem* >;
 }
 
 Entity::Entity( string name,
@@ -53,7 +53,7 @@ Entity::Entity( const Entity& other ) : GameObject( static_cast<GameObject> (oth
     this->guarding = other.guarding;
 
     this->copyWeapon( other.equiped_weapon_ptr );
-    this->copyInventory( other.inventory );
+    this->copyInventory( other.inventory_ptr );
 
     this->bodyParts = other.bodyParts;
 }
@@ -63,10 +63,12 @@ Entity::~Entity()
     if (this->equiped_weapon_ptr)
         delete this->equiped_weapon_ptr;
 
-    if ( !this->inventory.empty() )
-        for (auto& item : inventory )
+    if ( !this->inventory_ptr->empty() )
+        for (auto& item : *inventory_ptr )
             if (item)
                 delete item;
+    
+    delete this->inventory_ptr;
 }
 
 /**
@@ -204,7 +206,7 @@ void Entity::guard( )
 */
 void Entity::grabItem( Item& picked_item )
 {   
-    for (auto& itemAndQuantities : this->inventory )
+    for (auto& itemAndQuantities : *this->inventory_ptr )
     {
         if ( itemAndQuantities->item->getName() == picked_item.getName()
             && itemAndQuantities->quantity < Entity::ITEM_MAX_STACK )
@@ -214,7 +216,7 @@ void Entity::grabItem( Item& picked_item )
         }
     }
 
-    this->inventory.push_back( new InventoryItem { &picked_item, 1 } );
+    this->inventory_ptr->push_back( new InventoryItem { &picked_item, 1 } );
 }
 
 /**
@@ -234,7 +236,7 @@ void Entity::useItem( Item& item_to_use )
         return;
     }
     
-    for (auto& itemAndQuantities : this->inventory)
+    for (auto& itemAndQuantities : *this->inventory_ptr)
     {
         if (itemAndQuantities->item->getName() == item_to_use.getName()
             && itemAndQuantities->quantity > 0)
@@ -253,8 +255,8 @@ void Entity::useItem( Item& item_to_use )
 void Entity::useItem( size_t inventory_index )
 {
 
-    Item* item_at_index = this->inventory.at( inventory_index )->item;
-    int item_qts        = this->inventory.at( inventory_index )->quantity;
+    Item* item_at_index = this->inventory_ptr->at( inventory_index )->item;
+    int item_qts        = this->inventory_ptr->at( inventory_index )->quantity;
     
     Consumable* consumable_ptr 
         = dynamic_cast<Consumable*> ( item_at_index );
@@ -266,10 +268,10 @@ void Entity::useItem( size_t inventory_index )
         return;
     }
     
-    if (inventory_index >= 0 && inventory_index < this->inventory.size()
+    if (inventory_index >= 0 && inventory_index < this->inventory_ptr->size()
         && item_qts > 0 )
     {
-        this->inventory.at( inventory_index )->quantity--;
+        this->inventory_ptr->at( inventory_index )->quantity--;
         return;
     }
     std::cout << "No more " << item_at_index->getName() << " left!\n";
@@ -282,7 +284,7 @@ void Entity::useItem( size_t inventory_index )
 void Entity::showInventory( ) const
 {
     cout << " === " << this->getName() << " Inventory === \n";
-    for (const auto& inventory_item : this->inventory)
+    for (const auto& inventory_item : *this->inventory_ptr)
     {
         if (inventory_item == 0)
         {
@@ -313,15 +315,38 @@ void Entity::copyWeapon( const Weapon* const otherWeapon )
 
 /**
  * Aloca espaço e copia o conteúdo de um inventário para outro.
- * @param otherInventory Inventário a ser copiado
+ * Se houver algum inventário alocado na instância atual, ele
+ * é deletado, depois copiado.
+ * @param otherInventoryPtr Inventário a ser copiado
 */
-void Entity::copyInventory( const vector< InventoryItem* >& otherInventory )
+void Entity::copyInventory( const vector< InventoryItem* >* otherInventoryPtr )
 {
-    if (otherInventory.empty())
+    if (otherInventoryPtr->empty())
         return;
     
-    for (auto item : otherInventory)
-        this->inventory.push_back( new InventoryItem { item->item, item->quantity } );
+
+    this->deleteInventory();
+    
+    for (auto item : *otherInventoryPtr)
+        this->inventory_ptr->push_back( new InventoryItem { item->item, item->quantity } );
+}
+
+/**
+ * Checa se o inventário está vazio. Se estiver,
+ * deleta todo o vetor do inventário e dá clear nele.
+*/
+void Entity::deleteInventory()
+{
+    if (this->inventory_ptr->empty())
+        return;
+    
+    for ( auto& item : *this->inventory_ptr )
+    {
+        if (item != 0)
+            delete item;
+    }
+
+    this->inventory_ptr->clear();
 }
 
 /**
@@ -439,6 +464,19 @@ void Entity::setDexterity( double dexterity )
     this->dexterity = dexterity;
 }
 
+void Entity::setInventory(const vector<InventoryItem *>* const other_inventory)
+{
+
+    if (this->inventory_ptr->empty())
+    {
+        this->copyInventory( other_inventory );
+        return;
+    }
+
+    this->copyInventory( other_inventory );
+    
+}
+
 void Entity::setBodyParts( vector< BodyPart >& bodyParts )
 {
     if (bodyParts.empty())
@@ -500,7 +538,7 @@ const Entity& Entity::operator= ( const Entity& right )
         this->bodyParts = right.bodyParts;
 
         this->copyWeapon( right.equiped_weapon_ptr );
-        this->copyInventory( right.inventory );
+        this->copyInventory( right.inventory_ptr );
     }
     return *this;
 }
