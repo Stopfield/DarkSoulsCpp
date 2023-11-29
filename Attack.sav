@@ -1,0 +1,6 @@
+[ATTACK]
+name=nome
+damage_modifier=1.5
+stamina_cost_modifier=22.5
+display_message=chuta com força
+[END_ATTACK]

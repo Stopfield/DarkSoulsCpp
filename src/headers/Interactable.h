@@ -18,7 +18,7 @@ public:
     Interactable            ( const Interactable& );
     virtual ~Interactable   (  );
 
-    void interact   (  );
+    void            interact        (  );
     
     inline char getRepresentation()     const { return this->actual_representation;    }
     inline char getBefore()     const { return this->before_interaction;    }

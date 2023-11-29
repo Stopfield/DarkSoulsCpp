@@ -16,12 +16,8 @@ Battle::Battle(Entity& primeiro, Entity& segundo)
 
 Battle::Battle(const Battle& other)
 {
-    if (other.primeiro_ptr != nullptr)
-        this->primeiro_ptr = new Entity( *other.primeiro_ptr );
-
-    if (other.segundo_ptr != nullptr)
-        this->segundo_ptr = new Entity( *other.segundo_ptr );
-    
+    this->primeiro_ptr = other.primeiro_ptr;
+    this->segundo_ptr = other.segundo_ptr;
     this->turno = other.turno;
 }
 
@@ -89,4 +85,25 @@ void Battle::setTurno(int new_turno)
         return;
     }
     this->turno = new_turno;
+}
+
+/**
+ * Veja que Battle não é permitido de criar novas entidades
+ * ou ataques, mas sim usar o endereço de objetos já existem.
+ * Por isso, tome cuidado ao usar esse operador.
+*/
+const Battle &Battle::operator=(const Battle& other)
+{
+    if (this != &other)
+    {
+        if (other.primeiro_ptr != nullptr)
+            this->primeiro_ptr = other.primeiro_ptr;
+        if (other.segundo_ptr != nullptr)
+            this->segundo_ptr = other.segundo_ptr;
+        if (other.attack_primeiro_ptr != nullptr)
+            this->attack_primeiro_ptr = other.attack_segundo_ptr;
+        if (other.attack_segundo_ptr != nullptr)
+            this->attack_segundo_ptr = other.attack_segundo_ptr;
+    }
+    return *this;
 }

@@ -68,6 +68,7 @@ void Item::setDescription(string description)
 
 ostream& operator<< ( ostream& output, const Item& item )
 {
+    output << static_cast<Interactable> (item);
     output << item.name << " | " << item.description;
     return output;
 }
@@ -84,13 +85,15 @@ const Item& Item::operator= ( const Item& right )
         static_cast<Interactable> (*this) = static_cast<Interactable> (right);
         this->name = right.name;
         this->description = right.description;
-    }
+    }   
     return *this;
 }
 
 int Item::operator== ( const Item& right )
-{    
-    if (this->name == right.name)
+{
+
+    if ( static_cast<Interactable> (*this) == static_cast<Interactable> (right)
+        && this->name == right.name)
         return 1;
     return 0;
 }

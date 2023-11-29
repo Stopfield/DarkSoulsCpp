@@ -81,6 +81,7 @@ void Weapon::setDurability(int durability)
 
 ostream& operator<< (ostream& output, const Weapon& weapon)
 {
+    output << static_cast<Item> (weapon);
     output << "\n======   WEAPON   =====\n";
     output << "* " << weapon.name << "\n";
     output << "* Damage: \t" << weapon.damage << "\n";
@@ -106,7 +107,8 @@ const Weapon& Weapon::operator= (const Weapon& right)
 
 int Weapon::operator== (const Weapon& right )
 {
-    return ( static_cast<Item> (*this) == static_cast<Item> (right) );
+    return ( static_cast<Item> (*this) == static_cast<Item> (right)
+            && this->damage == right.damage );
 }
 
 int Weapon::operator!= (const Weapon& right)

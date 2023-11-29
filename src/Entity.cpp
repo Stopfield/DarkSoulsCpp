@@ -281,15 +281,6 @@ void Entity::useItem( size_t inventory_index )
     std::cout << "No more " << item_at_index->getName() << " left!\n";
 }
 
-void Entity::initializeRandomGenerator()
-{
-    std::random_device rd;
-    std::mt19937 gerador(rd());
-    std::uniform_int_distribution<int> distribuicao(1, 100);
-    int numeroAleatorio = distribuicao(gerador);
-
-}
-
 /**
  * Mostra o inventário da Entidade. Onde não há espaco alocado,
  * apenas linhas são mostradas.
@@ -568,8 +559,11 @@ const Entity& Entity::operator= ( const Entity& right )
 
 int Entity::operator==(const Entity& right)
 {
-    if (this->name == right.name )
+    if (this->name == right.name
+        && static_cast<GameObject> (*this) == static_cast<GameObject> (right))
+    {
         return 1;
+    }
     return 0;
 }
 

@@ -68,6 +68,16 @@ void Player::deleteAttacks( )
     this->attacks.clear();
 }
 
+bool Player::compareAttacks(const Player& other)
+{
+    for (size_t i = 0; i < other.attacks.size(); ++i)
+    {
+        if ( *this->attacks.at(i) != *other.attacks.at(i) )
+            return false;
+    }
+    return true;
+}
+
 #pragma endregion
 
 /* Exemplo de batalha
@@ -128,7 +138,8 @@ const Player &Player::operator=(const Player& other)
 
 int Player::operator==(const Player& other)
 {
-    return ( static_cast<Entity> ( *this ) == static_cast<Entity> (other) ) ;
+    return ( static_cast<Entity> ( *this ) == static_cast<Entity> (other) 
+            && this->compareAttacks( other ) ) ;
 }
 
 int Player::operator!=(const Player& other)

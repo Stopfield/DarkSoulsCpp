@@ -134,7 +134,7 @@ void Enemy::addAttackAndProbability( Attack* attack, int probability )
 ostream &operator<<(ostream& output, const Enemy& enemy)
 {
     output << " * Enemy Entity" << enemy.getName() << " *\n";
-    output << *(dynamic_cast<const Entity*> (&enemy));
+    output << *(dynamic_cast<const Entity*> (&enemy));  // Static_cast não funciona????
     return output;
 }
 
@@ -154,10 +154,29 @@ const Enemy &Enemy::operator=(const Enemy& other)
 
 int Enemy::operator==(const Enemy& other)
 {
-    return ( static_cast<Entity> ( *this ) == static_cast<Entity> (other) ) ;
+    return ( static_cast<Entity> ( *this ) == static_cast<Entity> (other)
+            && this->compareAttacks( other )) ;
 }
 
 int Enemy::operator!=(const Enemy& other)
 {
     return !( *this == other );
+}
+
+bool Enemy::compareAttacks(const Enemy& other)
+{
+    bool is_equal = false;
+    for ( auto& pair : this->probabilitiesAndAttacks )
+    {
+        for (auto& other_pair : other.probabilitiesAndAttacks )
+        {
+            if (pair.first == other_pair.first && *pair.second == *other_pair.second)
+            {
+                is_equal = true;
+                break;
+            }
+            is_equal = false;
+        }
+    }
+    return is_equal;
 }

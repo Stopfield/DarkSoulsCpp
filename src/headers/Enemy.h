@@ -46,6 +46,8 @@ public:
     int             operator!=  ( const Enemy& );
 
 private:
+    bool compareAttacks( const Enemy& );
+
     const static unsigned int   MAX_NUM_ENEMIES;
     const static unsigned short MIN_ENEMIES_TO_RAGE;
     

@@ -1,0 +1,6 @@
+[ATTACK]
+name=Queda Da Lua
+damage_modifier=2.8
+stamina_cost_modifier=100.0
+display_message=pula! É como se a lua estivesse caíndo do céu
+[END_ATTACK]

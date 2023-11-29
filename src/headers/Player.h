@@ -38,6 +38,7 @@ public:
 private:
     void copyAttacks        ( const Player& );
     void deleteAttacks      (  );
+    bool compareAttacks     ( const Player& );
 
     static unsigned int numPlayers;
     vector< Attack* >   attacks;        // É melhor um ponteiro de ataques ou só ataques?

@@ -66,13 +66,14 @@ void Armor::setWeight( double weight )
 
 #pragma region Operator Overloads
 
-ostream& operator<< (ostream& output, const Armor& Armor)
+ostream& operator<< (ostream& output, const Armor& armor)
 {
+    output << static_cast<Item> (armor);
     output << "\n======   Armor   =====\n";
-    output << "* " << Armor.name << "\n";
-    output << "* Damage Reduction: \t" << Armor.damage_reduction << "\n";
-    output << "* Strength required: \t" << Armor.min_strength << "\n";
-    output << "* Weight: \t" << Armor.weight << "\n";
+    output << "* " << armor.name << "\n";
+    output << "* Damage Reduction: \t" << armor.damage_reduction << "\n";
+    output << "* Strength required: \t" << armor.min_strength << "\n";
+    output << "* Weight: \t" << armor.weight << "\n";
     return output;  
 }
 
@@ -95,7 +96,10 @@ const Armor &Armor::operator=(const Armor &right)
 
 int Armor::operator== (const Armor& right )
 {
-    return ( static_cast<Item> (*this) == static_cast<Item> (right) );
+    return ( static_cast<Item> (*this) == static_cast<Item> (right)
+            && this->damage_reduction == right.damage_reduction
+            && this->weight == right.weight
+            && this->min_strength == right.min_strength );
 }
 
 int Armor::operator!= (const Armor& right)

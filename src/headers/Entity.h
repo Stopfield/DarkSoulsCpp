@@ -26,6 +26,9 @@ using std::map;
     { "BACK", 1.5f  } }
 
 #include "EntityDetails.h"
+#include "Item.h"
+
+class Item;
 
 /**
  * Classe que abstrai tudo que se move e pode batalhar!
@@ -57,7 +60,6 @@ public:
     void    grabItem                    ( Item& );
     void    useItem                     ( Item& );
     void    useItem                     ( size_t );
-    void    initializeRandomGenerator   (  );
 
     void showInventory                  ( ) const;
     const BodyPart& chooseRandBodyPart  ( ) const;

@@ -18,6 +18,8 @@ public:
 
     virtual ~Consumable();
 
+    void consume_item( Entity& );
+
     double getHealthFactor() const { return this->health_factor; }
     void setHealthFactor( double );
 

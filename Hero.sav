@@ -1,0 +1,92 @@
+[PLAYER]
+
+[PLAYER_ENTITY]
+[ENTITY]
+name=Anástacio
+max_health=250
+health=250
+stamina=75
+strength=40
+dexterity=25
+representation=T
+position_x=5
+position_y=2
+
+[ENTITY_INVENTORY]
+[INVENTORY]
+[INVENTORY_CONSUMABLE]
+5
+
+[CONSUMABLE]
+name=Estus Flask
+description=Recupera vida
+health_factor=1.5
+representation=E
+[END_CONSUMABLE]
+[INVENTORY_WEAPON]
+1
+
+[WEAPON]
+name=Old Astora Sword
+description=Espada lendária desgastada
+damage=150
+durability=150
+[END_WEAPON]
+[INVENTORY_ARMOR]
+1
+
+[ARMOR]
+name=Chainmail Armor
+description=Cota de malha reforçada
+damage_reduction=0.3
+min_strength=25
+weight=25.7
+[END_ARMOR]
+[END_INVENTORY]
+
+[ENTITY_BODY_PART]
+[PART]
+part_description=HEAD
+damage_modifier=2.0
+[END_PART]
+
+[ENTITY_BODY_PART]
+[PART]
+part_description=FRONT
+damage_modifier=1.0
+[END_PART]
+
+[ENTITY_BODY_PART]
+[PART]
+part_description=BACK
+damage_modifier=1.5
+[END_PART]
+
+[END_ENTITY]
+
+[PLAYER_ATTACK]
+[ATTACK]
+name=Estocada
+damage_modifier=1.5
+stamina_cost_modifier=2.0
+display_message=avança sua arma com rapidez!
+[END_ATTACK]
+
+[PLAYER_ATTACK]
+[ATTACK]
+name=Ataque Giratório
+damage_modifier=2.25
+stamina_cost_modifier=2.0
+display_message=gira sua arma com elegância, destruindo tudo no caminho!
+[END_ATTACK]
+
+
+[PLAYER_ATTACK]
+[ATTACK]
+name=Pulo da Morte
+damage_modifier=4.25
+stamina_cost_modifier=2.0
+display_message=dá um pulo enorme e cai em cima do oponente!
+[END_ATTACK]
+
+[END_PLAYER]

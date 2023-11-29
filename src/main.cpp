@@ -24,132 +24,98 @@
 
 int main()
 {
-    // Weapon espada_branca("Espada Branca", 15.5f, 150);
-    // Weapon lanca_da_lua("Lança da Lua", 10.25f, 250);
-    // Weapon espeta_coracao("Espeta Coração", 25.25f, 150);
-    // Weapon luz_ardente("Luz Ardente", 30.25f, 500);
-
-    // Attack giro_atomico( "Giro Atômico", 0.8f, 100.0f, "gira loucamente até gerar uma explosão nuclear!");
-    // Attack ataque_largo( "Ataque Largo", 0.5f, 0.25f, "ataca girando sua arma no ar!");
-    // Attack estocada( "Estocada", 2.5f, 0.15f, "estoca com sua arma!");
-    // Attack queda_da_lua( "Queda da Lua", 2.8f, 100.0f, "pula! É como se a lua estivesse caíndo do céu");
-
-    // // vector<Attack> thiago_ataques;
-
-    // Player thiago("Thiago");
-    // thiago.equipWeapon( espada_branca );
-    // thiago.setMaxHealth( 500.0f );
-    // thiago.heal( 500.0f );
-
-    // thiago.addAttack( giro_atomico );
-    // thiago.addAttack( ataque_largo );
-    // thiago.addAttack( estocada );
-    
-    // Enemy jonas("Jonas");
-    // jonas.equipWeapon( lanca_da_lua );
-
-
-    // jonas.addAttackAndProbability( &ataque_largo, 25 );
-    // jonas.addAttackAndProbability( &estocada, 70 );
-    // jonas.addAttackAndProbability( &queda_da_lua, 5 );
-
-
-    // // std::cout << batalha_do_seculo;
-
-    // // batalha_do_seculo.planTurn( giro_atomico, estocada );
-    // // batalha_do_seculo.executeTurn();
-
-    // std::cout << "Jonas, seu maior inimigo está na sua frente com a lança da lua!\n";
-    // std::cout << "Faça o melhor para derrotá-lo!\n";
-
-    // // NormalBattle batalha_do_seculo(thiago, jonas);
-
-    // // char enter;
-
-    // // bool resultado = batalha_do_seculo.begin_battle();
-
-    // // if (resultado)
-    // // {
-    // //     system("clear");
-    // //     std::cout << "VOCÊ GANHOU!\n";
-    // //     std::cin >> enter;
-    // //     return 0;
-    // // }
-    // // system("clear");
-    // // std::cout << "GAME OVER\n";
-    // // std::cin >> enter ;
-
-    // string file_path = "/home/thiago/new_dark_souls/Attack.sav";
-    // std::ifstream load_stream ( file_path );
-    // Attack* new_attack = AttackParser::loadFromStream( load_stream );
-    
-    // std::cout << *new_attack;
-
     /* Normal Battle - Demonstração */
-    // Weapon espada_branca("Espada Branca", 15.5f, 150);
-    // Weapon lanca_da_lua("Lança da Lua", 10.25f, 250);
-    // string hero_file_path = "/home/thiago/new_dark_souls/Hero.sav";
-    // string enemy_file_path = "/home/thiago/new_dark_souls/Enemy.sav";
-    // std::ifstream hero_load_stream  ( hero_file_path );
-    // std::ifstream enemy_load_stream ( enemy_file_path );
+    Weapon espada_branca("Espada Branca", 15.5f, 150);
+    Weapon lanca_da_lua("Lança da Lua", 10.25f, 250);
 
-    // Player* player_ptr = PlayerParser::loadFromStream( hero_load_stream );
-    // Enemy* enemy_ptr = EnemyParser::loadFromStream( enemy_load_stream );
+    string hero_file_path = "/home/thiago/new_dark_souls/Hero.sav";
+    string enemy_file_path = "/home/thiago/new_dark_souls/Enemy.sav";
+    std::ifstream hero_load_stream  ( hero_file_path );
+    std::ifstream enemy_load_stream ( enemy_file_path );
 
-    // player_ptr->equipWeapon( lanca_da_lua );
-    // enemy_ptr->equipWeapon( espada_branca );
+    Player* player_ptr = PlayerParser::loadFromStream( hero_load_stream );
+    Enemy* enemy_ptr = EnemyParser::loadFromStream( enemy_load_stream );
 
-    // std::cout << *player_ptr;
-    // std::cout << *enemy_ptr;
+    player_ptr->equipWeapon( lanca_da_lua );
+    enemy_ptr->equipWeapon( espada_branca );
 
-    // NormalBattle batalha( *player_ptr, *enemy_ptr );
+    std::cout << *player_ptr;
+    std::cout << *enemy_ptr;
 
-    // batalha.begin_battle();
+    NormalBattle batalha( *player_ptr, *enemy_ptr );
+
+    batalha.begin_battle();
 
     // ====================================================
     /* Boss Battle - Demonstração */
-
-    /* Armas */
-    Weapon espada_branca("Espada Branca", 15.5f, 150);
-    Weapon lanca_da_lua("Lança da Lua", 10.25f, 250);
-    Weapon espeta_coracao("Espeta Coração", 25.25f, 150);
-    Weapon luz_ardente("Luz Ardente", 30.25f, 500);
-
-    /* Ataques */
-    Attack giro_atomico( "Giro Atômico", 0.8f, 100.0f, "gira loucamente até gerar uma explosão nuclear!");
-    Attack ataque_largo( "Ataque Largo", 0.5f, 0.25f, "ataca girando sua arma no ar!");
-    Attack estocada( "Estocada", 2.5f, 0.15f, "estoca com sua arma!");
-    Attack queda_da_lua( "Queda da Lua", 2.8f, 100.0f, "pula! É como se a lua estivesse caíndo do céu");
-
-    Player thiago("Thiago");
-    thiago.equipWeapon( espada_branca );
-    thiago.setMaxHealth( 500.0f );
-    thiago.heal( 500.0f );
-
-    thiago.addAttack( giro_atomico );
-    thiago.addAttack( ataque_largo );
-    thiago.addAttack( estocada );
-
-    /* Primeira fase */
-    Enemy cavaleiro_negro("Cavaleiro Negro");
-    cavaleiro_negro.equipWeapon( espeta_coracao );
-    cavaleiro_negro.addAttackAndProbability( &ataque_largo, 50 );
-    cavaleiro_negro.addAttackAndProbability( &giro_atomico, 2 );
-    cavaleiro_negro.addAttackAndProbability( &estocada,     80 );
-
-    /* Segunda fase */
-    Enemy cavaleiro_negro_alado("Cavaleiro Negro Alado");
-    cavaleiro_negro_alado.equipWeapon( luz_ardente );
-    cavaleiro_negro_alado.addAttackAndProbability( &queda_da_lua, 5 );
-    cavaleiro_negro_alado.addAttackAndProbability( &giro_atomico, 2 );
-    cavaleiro_negro_alado.addAttackAndProbability( &ataque_largo, 50 );
+    /* Carregando Armas */
+    // string weapons_path = "/home/thiago/DarkSoulsCpp/src/Weapons";
+    // std::ifstream stream_espada_branca  (weapons_path + "/EspadaBranca.sav" );
+    // std::ifstream stream_lanca_da_lua   (weapons_path + "/LancaDaLua.sav"   );
+    // std::ifstream stream_espeta_coracao (weapons_path + "/EspetaCoracao.sav");
+    // std::ifstream stream_luz_ardente    (weapons_path + "/LuzArdente.sav"   );
 
 
-    BossBattle batalha_com_cavaleiro_negro( thiago );
-    batalha_com_cavaleiro_negro.add_phase( cavaleiro_negro );       // Primeira fase
-    batalha_com_cavaleiro_negro.add_phase( cavaleiro_negro_alado ); // Segunda fase
+    // Weapon* espada_branca_ptr   = WeaponParser::loadFromStream  ( stream_espada_branca  );
+    // Weapon* lanca_da_lua_ptr   = WeaponParser::loadFromStream   ( stream_lanca_da_lua   );
+    // Weapon* espeta_coracao_ptr  = WeaponParser::loadFromStream  ( stream_espeta_coracao );
+    // Weapon* luz_ardente_ptr     = WeaponParser::loadFromStream  ( stream_luz_ardente    );
 
-    batalha_com_cavaleiro_negro.begin_battle();
+    // std::cout << *espada_branca_ptr << std::endl;
 
+    // /* Ataques */
+    // string attacks_path = "/home/thiago/DarkSoulsCpp/src/Attacks";
+    // std::ifstream stream_giro_atomico   (attacks_path + "/GiroAtomico.sav" );
+    // std::ifstream stream_ataque_largo   (attacks_path + "/AtaqueLargo.sav"  );
+    // std::ifstream stream_estocada       (attacks_path + "/Estocada.sav"     );
+    // std::ifstream stream_queda_da_lua   (attacks_path + "/QuedaDaLua.sav"   );
+
+    // Attack* giro_atomico_ptr    = AttackParser::loadFromStream( stream_giro_atomico );
+    // Attack* ataque_largo_ptr    = AttackParser::loadFromStream( stream_ataque_largo );
+    // Attack* estocada_ptr        = AttackParser::loadFromStream( stream_estocada     );
+    // Attack* queda_da_lua_ptr    = AttackParser::loadFromStream( stream_queda_da_lua );
+
+    // /* Já demonstramos anteriormente o carregamento de entidades */
+    // Player thiago("Thiago");
+    // thiago.equipWeapon( *espada_branca_ptr );
+    // thiago.setMaxHealth( 500.0f );
+    // thiago.heal( 500.0f );
+
+    // thiago.addAttack( *giro_atomico_ptr );
+    // thiago.addAttack( *ataque_largo_ptr );
+    // thiago.addAttack( *estocada_ptr     );
+
+    // /* Primeira fase */
+    // Enemy cavaleiro_negro("Cavaleiro Negro");
+    // cavaleiro_negro.equipWeapon( *espeta_coracao_ptr );
+    // cavaleiro_negro.addAttackAndProbability( ataque_largo_ptr, 50 );
+    // cavaleiro_negro.addAttackAndProbability( giro_atomico_ptr, 2 );
+    // cavaleiro_negro.addAttackAndProbability( estocada_ptr,     80 );
+
+    // /* Segunda fase */
+    // Enemy cavaleiro_negro_alado("Cavaleiro Negro Alado");
+    // cavaleiro_negro_alado.equipWeapon( *luz_ardente_ptr );
+    // cavaleiro_negro_alado.addAttackAndProbability( queda_da_lua_ptr, 5  );
+    // cavaleiro_negro_alado.addAttackAndProbability( giro_atomico_ptr, 2  );
+    // cavaleiro_negro_alado.addAttackAndProbability( ataque_largo_ptr, 50 );
+
+
+    // BossBattle batalha_com_cavaleiro_negro( thiago );
+    // batalha_com_cavaleiro_negro.add_phase( cavaleiro_negro );       // Primeira fase
+    // batalha_com_cavaleiro_negro.add_phase( cavaleiro_negro_alado ); // Segunda fase
+
+    // batalha_com_cavaleiro_negro.begin_battle();
+
+    // /* Deletes */
+    // delete espada_branca_ptr;
+    // delete lanca_da_lua_ptr;
+    // delete espeta_coracao_ptr;
+    // delete luz_ardente_ptr;
+
+    // delete giro_atomico_ptr;
+    // delete ataque_largo_ptr;
+    // delete estocada_ptr;
+    // delete queda_da_lua_ptr;
+    
     return 0;
 }

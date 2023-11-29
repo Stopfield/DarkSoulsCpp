@@ -1,0 +1,6 @@
+[ATTACK]
+name=Ataque Largo
+damage_modifier=0.5
+stamina_cost_modifier=0.25
+display_message=ataca girando sua arma no ar!
+[END_ATTACK]

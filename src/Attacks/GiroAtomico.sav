@@ -1,0 +1,6 @@
+[ATTACK]
+name=Giro Atômico
+damage_modifier=0.8
+stamina_cost_modifier=100.0
+display_message=gira loucamente até gerar uma explosão nuclear!
+[END_ATTACK]

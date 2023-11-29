@@ -1,0 +1,6 @@
+[ATTACK]
+name=Estocada
+damage_modifier=2.5
+stamina_cost_modifier=0.15
+display_message=estoca com sua arma!
+[END_ATTACK]

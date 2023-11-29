@@ -11,12 +11,11 @@ BossBattle::BossBattle(Entity& primeiro ) : Battle()
     this->phase_number = 0;
 }
 
-BossBattle::BossBattle(const BossBattle& other)
+BossBattle::BossBattle(const BossBattle& other) : Battle( other )
 {
-    this->primeiro_ptr = other.primeiro_ptr;
     this->phase_number = other.phase_number;
-    // Receber vetores de fases
-    
+    this->segundo_ptr = other.segundo_ptr;
+    this->copyBossPhases( other );
 }
 
 BossBattle::~BossBattle()
@@ -74,11 +73,21 @@ bool BossBattle::begin_battle()
         }
 
         if ( player_ptr->getHealth() <= 0 )
+        {
+            system("clear");
+            std::cout << "GAME OVER\n";
+            std::cin >> chosen_attack;
             return false;
+        }
     }
 
     if ( player_ptr->getHealth() > 0 )
+    {
+        system("clear");
+        std::cout << "VOCÊ GANHOU!\n";
+        std::cin >> chosen_attack;
         return true;
+    }
     return false;
 }
 
@@ -89,11 +98,13 @@ void BossBattle::add_phase( Enemy& phase )
     this->boss_phases.push_back( new_phase );
 }
 
-void BossBattle::toNextPhase()
+void BossBattle::copyBossPhases(const BossBattle& other)
 {
-
+    if (other.boss_phases.empty())
+        return;
+    for (auto& phase : other.boss_phases )
+        this->add_phase( *phase );
 }
-
 
 ostream &operator<<(ostream& output, const BossBattle& battle)
 {
