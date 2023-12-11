@@ -1681,6 +1681,8 @@ BossBattle::BossBattle(const BossBattle& other) : Battle( other )
       processamento das variáveis de status e 3. salvamento dessas variáveis. 
       Sem o diagrama UML, a saída do programa e o vídeo, o trabalho não será avaliado.*/
 
-    //Link arquivo de configuração no repositório
-
+//Link arquivo de configuração no repositório
+src/Weapons/
+src/Attacks/ 
     //Link vídeo mostrando a execução do código usando o arquivo de configuração
+https://youtu.be/Sn9s7rKg81k
