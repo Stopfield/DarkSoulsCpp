@@ -8,8 +8,7 @@ enum class ArmorParser::LoadState
 enum class ArmorParser::Attribute
 {
     DAMAGE_REDUCTION, MIN_STRENGTH, WEIGHT,
-    NAME, DESCRIPTION,
-    BEFORE, AFTER
+    NAME, DESCRIPTION
 };
 
 map< ArmorParser::LoadState, string > ArmorParser::load_state_matches = {
@@ -22,9 +21,7 @@ map< ArmorParser::Attribute, string > ArmorParser::attribute_matches = {
     { ArmorParser::Attribute::MIN_STRENGTH,     "min_strength"      },
     { ArmorParser::Attribute::WEIGHT,           "weight"            },
     { ArmorParser::Attribute::NAME,             "name"              },
-    { ArmorParser::Attribute::DESCRIPTION,      "description"       },
-    { ArmorParser::Attribute::BEFORE,           "before"            },
-    { ArmorParser::Attribute::AFTER,            "after"             },
+    { ArmorParser::Attribute::DESCRIPTION,      "description"       }
 };
 
 /**
@@ -87,16 +84,6 @@ void ArmorParser::saveInStream(Armor& item, std::ofstream& loaded_file_stream)
         << "="
         << item.getWeight()
         << "\n";
-    loaded_file_stream
-        << ArmorParser::attribute_matches[ Attribute::BEFORE ]
-        << "="
-        << item.getBefore()
-        << "\n";
-    loaded_file_stream
-        << ArmorParser::attribute_matches[ Attribute::AFTER ]
-        << "="
-        << item.getAfter()
-        << "\n";
 
     loaded_file_stream << ArmorParser::load_state_matches[ LoadState::END_ARMOR ] << "\n";
 }
@@ -158,18 +145,6 @@ Armor* ArmorParser::parseFile( std::ifstream& input_stream )
         if (line_key == ArmorParser::attribute_matches[ Attribute::WEIGHT ])
         {
             new_armor->setWeight( stod( line_value ) );
-            continue;
-        }
-        
-        if (line_key == ArmorParser::attribute_matches[ Attribute::BEFORE ])
-        {
-            new_armor->setBefore( line_value[0] );
-            continue;
-        }
-
-        if (line_key == ArmorParser::attribute_matches[ Attribute::AFTER ])
-        {
-            new_armor->setAfter( line_value[0] );
             continue;
         }
     }

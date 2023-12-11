@@ -59,42 +59,4 @@ void GameObject::setRepresentation(char new_repr)
     this->representation = 'O';
 }
 
-const GameObject &GameObject::operator=(const GameObject& other)
-{
-    if (this != &other)
-    {
-        if (other.position != 0)
-        {
-            if (this->position != 0)
-                delete this->position;
-            this->position = new Vector2D {other.position->x, other.position->y };
-        }
-        this->representation = other.representation;
-    }
-    return *this;
-}
-
-int GameObject::operator==(const GameObject& other)
-{
-    return ( this->representation == other.representation );
-}
-
-int GameObject::operator!=(const GameObject& other)
-{
-    return !( *this == other );
-}
-
-ostream &operator<<(ostream& output, const GameObject& object)
-{
-    output << "Object " << object.getRepresentation() <<
-        " at (" << object.getPosition().x << ", " << object.getPosition().y
-        << ")\n";
-    return output;
-}
-
-int operator!(const GameObject& object)
-{
-    return !( object.representation > 32 && object.representation < 127 );
-}
-
 

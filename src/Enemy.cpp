@@ -58,12 +58,13 @@ Enemy::Enemy(   string name,
     numEnemies++;
 }
 
-Enemy::Enemy( const Enemy& other ) : Entity( static_cast<Entity> (other) )
+Enemy::Enemy( const Enemy& other ) : Entity( other )
 {
     std::cout << "Teste" << std::endl;
     if (Enemy::numEnemies >= Enemy::MAX_NUM_ENEMIES)
         cout << "Number of enemies reached maximum value! Be careful!\n";
     numEnemies++;
+
 
     // Copia map
     if (!other.probabilitiesAndAttacks.empty())
@@ -84,6 +85,15 @@ Enemy::~Enemy()
         if (probAndAtk.second)
             delete probAndAtk.second;
     numEnemies--;
+}
+
+void Enemy::interact()
+{
+    char press_enter;
+    std::cout << "Você vê um inimigo! Ele corre na sua direção!\n";
+    std::cout << "Uma batalha começa!\n";
+    std::cin >> press_enter;
+    /* Chamar batalha */
 }
 
 /**
@@ -131,52 +141,95 @@ void Enemy::addAttackAndProbability( Attack* attack, int probability )
 //     player.setHealth(damage);
 // }
 
-ostream &operator<<(ostream& output, const Enemy& enemy)
+ostream &operator<<(ostream& output, const Enemy& entity)
 {
-    output << " * Enemy Entity" << enemy.getName() << " *\n";
-    output << *(dynamic_cast<const Entity*> (&enemy));  // Static_cast não funciona????
+    output << " === Player Entity " << entity.name << " === \n";
+    output << "Entity: " << entity.name << "\n";
+    output << "Health: " << entity.health << "\n";
+    output << "Stamina: " << entity.stamina << "\n";
+    output << "Strength: " << entity.strength << "\n";
+    output << "Dexterity: " << entity.dexterity;
+
+    if (entity.equiped_weapon_ptr == 0)
+    {
+        output << "\n === Weapon === \n";
+        output << " Unarmed \n";
+    }
+    /* Verifica o tipo de arma */
+    else
+    {
+        LongRangeWeapon* long_range_wpn_ptr
+            = dynamic_cast<LongRangeWeapon*> (entity.equiped_weapon_ptr);
+
+        if (long_range_wpn_ptr != nullptr)
+        {
+            output << *long_range_wpn_ptr;
+            long_range_wpn_ptr = nullptr;
+        }
+        else
+        {
+            MeleeWeapon* melee_wpn_ptr
+                = dynamic_cast<MeleeWeapon*> (entity.equiped_weapon_ptr);
+            output << *melee_wpn_ptr;
+            melee_wpn_ptr = nullptr;
+        }
+    }
+    output << " === Body Parts === \n";
+    for (const auto& part : entity.bodyParts)
+        output << part.partDescription << "\n";
+    output << " ======================== \n";
     return output;
 }
 
-int operator!(const Enemy& enemy)
+int operator!(const Enemy& right)
 {
-    return !( static_cast<Entity> ( enemy ) );
+    return ( right.name.empty() || right.name == right.DEFAULT_NAME );
 }
 
-const Enemy &Enemy::operator=(const Enemy& other)
+const Enemy &Enemy::operator=(const Enemy& right)
 {
-    if (this != &other)
+    if (this != &right)
     {
-        static_cast<Entity> (*this) = static_cast<Entity> (other);
+        if (right.position == 0)
+            this->position = 0;
+        else
+            this->position = new Vector2D { right.position->x, right.position->y };
+        
+        this->representation    = right.representation;
+        this->name              = right.name;
+        this->maxHealth         = right.maxHealth;
+        this->health            = right.health;
+        this->stamina           = right.stamina;
+        this->strength          = right.strength;
+        this->dexterity         = right.dexterity;
+        this->bodyParts         = right.bodyParts;
+
+        this->copyWeapon( right.equiped_weapon_ptr );
+        this->copyInventory( right.inventory_ptr );
+
+        // Copia map
+        if (!right.probabilitiesAndAttacks.empty())
+        {
+            for ( auto& prob_and_attacks : right.probabilitiesAndAttacks )
+            {
+                std::cout << *prob_and_attacks.second << std::endl;
+                this->addAttackAndProbability(
+                    new Attack (*prob_and_attacks.second), prob_and_attacks.first
+                );
+            }
+        }
+
     }
     return *this;
 }
 
-int Enemy::operator==(const Enemy& other)
+int Enemy::operator==(const Enemy& right)
 {
-    return ( static_cast<Entity> ( *this ) == static_cast<Entity> (other)
-            && this->compareAttacks( other )) ;
-}
+    if (this->name == right.name )
+        return 1;
+    return 0;}
 
 int Enemy::operator!=(const Enemy& other)
 {
     return !( *this == other );
-}
-
-bool Enemy::compareAttacks(const Enemy& other)
-{
-    bool is_equal = false;
-    for ( auto& pair : this->probabilitiesAndAttacks )
-    {
-        for (auto& other_pair : other.probabilitiesAndAttacks )
-        {
-            if (pair.first == other_pair.first && *pair.second == *other_pair.second)
-            {
-                is_equal = true;
-                break;
-            }
-            is_equal = false;
-        }
-    }
-    return is_equal;
 }

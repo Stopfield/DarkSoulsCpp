@@ -93,16 +93,6 @@ void WeaponParser::saveInStream(Weapon& item, std::ofstream& loaded_file_stream)
         << "="
         << item.getDamage()
         << "\n";
-    loaded_file_stream
-        << WeaponParser::attribute_matches[ Attribute::BEFORE ]
-        << "="
-        << item.getBefore()
-        << "\n";
-    loaded_file_stream
-        << WeaponParser::attribute_matches[ Attribute::AFTER ]
-        << "="
-        << item.getAfter()
-        << "\n";
 
     loaded_file_stream << WeaponParser::load_state_matches[ LoadState::END_WEAPON ] << "\n";
 }
@@ -116,62 +106,51 @@ void WeaponParser::saveInStream(Weapon& item, std::ofstream& loaded_file_stream)
 */
 Weapon *WeaponParser::parseFile( std::ifstream& input_stream )
 {
-    using Attribute = WeaponParser::Attribute;
-    using LoadState = WeaponParser::LoadState;
+    // using Attribute = WeaponParser::Attribute;
+    // using LoadState = WeaponParser::LoadState;
     
-    string entire_line, line_value, line_key;
-    size_t equal_sign_index;
+    // string entire_line, line_value, line_key;
+    // size_t equal_sign_index;
 
-    Weapon* new_weapon = new Weapon();
+    // Weapon* new_weapon = new Weapon();
 
-    while (true)
-    {
-        std::getline( input_stream, entire_line );
+    // while (true)
+    // {
+    //     std::getline( input_stream, entire_line );
 
-        // If [END_PLAYER], stop parsing.
-        if (entire_line == WeaponParser::load_state_matches[ LoadState::END_WEAPON ])
-            break;
+    //     // If [END_PLAYER], stop parsing.
+    //     if (entire_line == WeaponParser::load_state_matches[ LoadState::END_WEAPON ])
+    //         break;
 
-        equal_sign_index = entire_line.find( '=' );
+    //     equal_sign_index = entire_line.find( '=' );
 
-        line_key     = entire_line.substr( 0, equal_sign_index );
-        line_value   = entire_line.substr( equal_sign_index + 1, entire_line.size() );
+    //     line_key     = entire_line.substr( 0, equal_sign_index );
+    //     line_value   = entire_line.substr( equal_sign_index + 1, entire_line.size() );
                 
-        if (line_key == WeaponParser::attribute_matches[ Attribute::NAME ])
-        {
-            new_weapon->setName( line_value );
-            continue;
-        }
+    //     if (line_key == WeaponParser::attribute_matches[ Attribute::NAME ])
+    //     {
+    //         new_weapon->setName( line_value );
+    //         continue;
+    //     }
 
-        if (line_key == WeaponParser::attribute_matches[ Attribute::DESCRIPTION ])
-        {
-            new_weapon->setDescription( line_value );
-            continue;
-        }
+    //     if (line_key == WeaponParser::attribute_matches[ Attribute::DESCRIPTION ])
+    //     {
+    //         new_weapon->setDescription( line_value );
+    //         continue;
+    //     }
 
-        if (line_key == WeaponParser::attribute_matches[ Attribute::DAMAGE ])
-        {
-            new_weapon->setDamage( stod( line_value ) );
-            continue;
-        }
+    //     if (line_key == WeaponParser::attribute_matches[ Attribute::DAMAGE ])
+    //     {
+    //         new_weapon->setDamage( stod( line_value ) );
+    //         continue;
+    //     }
 
-        if (line_key == WeaponParser::attribute_matches[ Attribute::DURABILITY ])
-        {
-            new_weapon->setDurability( stod( line_value ) );
-            continue;
-        }
-
-        if (line_key == WeaponParser::attribute_matches[ Attribute::BEFORE ])
-        {
-            new_weapon->setBefore( line_value[0] );
-            continue;
-        }
-
-        if (line_key == WeaponParser::attribute_matches[ Attribute::AFTER ])
-        {
-            new_weapon->setAfter( line_value[0] );
-            continue;
-        }
-    }
-    return new_weapon;
+    //     if (line_key == WeaponParser::attribute_matches[ Attribute::DURABILITY ])
+    //     {
+    //         new_weapon->setDurability( stod( line_value ) );
+    //         continue;
+    //     }
+    // }
+    // return new_weapon;
+    return 0;
 }

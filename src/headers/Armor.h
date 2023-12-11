@@ -21,6 +21,8 @@ public:
     Armor( const Armor& );
     virtual ~Armor();
 
+    void use( Entity& ) override;
+
     double getDamageReduction() const { return this->damage_reduction; }
     double getMinStrength()     const { return this->min_strength;     }
     double getWeight()          const { return this->weight;           }

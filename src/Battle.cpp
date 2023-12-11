@@ -16,8 +16,37 @@ Battle::Battle(Entity& primeiro, Entity& segundo)
 
 Battle::Battle(const Battle& other)
 {
-    this->primeiro_ptr = other.primeiro_ptr;
-    this->segundo_ptr = other.segundo_ptr;
+    Player* player_ptr  = nullptr;
+    Enemy*  enemy_ptr   = nullptr;
+
+    /* Verifica se a primeira entidade é Player ou Enemy */
+    player_ptr = dynamic_cast<Player*> (other.primeiro_ptr);
+    if (player_ptr != nullptr)
+    {
+        this->primeiro_ptr = new Player( *player_ptr );
+        player_ptr = nullptr;
+    }
+    else
+    {
+        enemy_ptr = dynamic_cast<Enemy*> (other.primeiro_ptr);
+        this->primeiro_ptr = new Enemy( *enemy_ptr );
+        enemy_ptr = nullptr;
+    }
+
+    /* Verifica se a segunda entidade é Player ou Enemy */
+    player_ptr = dynamic_cast<Player*> (other.segundo_ptr);
+    if (player_ptr != nullptr)
+    {
+        this->segundo_ptr = new Player( *player_ptr );
+        player_ptr = nullptr;
+    }
+    else
+    {
+        enemy_ptr = dynamic_cast<Enemy*> ( enemy_ptr );
+        this->segundo_ptr = new Enemy( *enemy_ptr );
+        enemy_ptr = nullptr;
+    }
+    
     this->turno = other.turno;
 }
 
@@ -25,28 +54,43 @@ Battle::~Battle()
 {
     // Não deleta nenhum dos ponteiros. Eles não são criados aqui.
     // A futura classe Game vai lidar com eles
-    std::cout << "Destrutor do Battle\n" << std::endl;
+    // std::cout << "Destrutor do Battle\n" << std::endl;
 }
 
 /* Se um ataque é nulo, a entidade escolhe (WIP) */
-void Battle::planTurn( const Attack& primeiro_attack, const Attack& segundo_attack )
+void Battle::planTurn(
+    const Attack* primeiro_melee,   size_t primeiro_aim_index,
+    const Attack* segundo_melee,    size_t segundo_aim_index
+)
 {
-    this->attack_primeiro_ptr = &primeiro_attack;
-    this->attack_segundo_ptr = &segundo_attack;
+    if (primeiro_melee == nullptr)
+        this->attack_primeiro_ptr = nullptr;
+    else
+        this->attack_primeiro_ptr = primeiro_melee;
+
+    if (segundo_melee == nullptr)
+        this->attack_segundo_ptr = nullptr;
+    else
+        this->attack_segundo_ptr = segundo_melee;
+
+    this->primeiro_aim_index = primeiro_aim_index;
+    this->segundo_aim_index = segundo_aim_index;
 }
 
-void Battle::executeTurn()
+/**
+ * Executa um turno, executando o ataque de cada entidade.
+*/
+void Battle::executeTurn(  )
 {
-    if (this->attack_primeiro_ptr == nullptr || this->attack_segundo_ptr == nullptr)
-        return;
-    if (this->primeiro_ptr == nullptr || this->segundo_ptr == nullptr)
-        return;
-    
-    this->primeiro_ptr->attack  ( *this->segundo_ptr,   *this->attack_primeiro_ptr  );
-    this->segundo_ptr->attack   ( *this->primeiro_ptr,  *this->attack_segundo_ptr   );
+    this->primeiro_ptr->attack( *this->segundo_ptr, this->attack_primeiro_ptr, primeiro_aim_index);
+    this->segundo_ptr->attack(  *this->primeiro_ptr, this->attack_segundo_ptr, segundo_aim_index);
 
     this->attack_primeiro_ptr = nullptr;
     this->attack_segundo_ptr = nullptr;
+
+    primeiro_aim_index = 0;
+    segundo_aim_index = 0;
+
 }
 
 void Battle::setPrimeiro(Entity& primeiro) 
@@ -56,11 +100,8 @@ void Battle::setPrimeiro(Entity& primeiro)
         this->primeiro_ptr = &primeiro;
         return;
     }
-    if (primeiro != *this->primeiro_ptr)
-    {
+    if ( !this->areEntitiesEqual( *this->primeiro_ptr, primeiro ) )
         this->primeiro_ptr = &primeiro;
-        return;
-    }
 }
 
 void Battle::setSegundo(Entity& segundo)
@@ -70,11 +111,8 @@ void Battle::setSegundo(Entity& segundo)
         this->segundo_ptr = &segundo;
         return;
     }
-    if (segundo != *this->segundo_ptr)
-    {
+    if ( !this->areEntitiesEqual( *this->segundo_ptr, segundo ) )
         this->segundo_ptr = &segundo;
-        return;
-    }
 }
 
 void Battle::setTurno(int new_turno)
@@ -88,22 +126,28 @@ void Battle::setTurno(int new_turno)
 }
 
 /**
- * Veja que Battle não é permitido de criar novas entidades
- * ou ataques, mas sim usar o endereço de objetos já existem.
- * Por isso, tome cuidado ao usar esse operador.
+ * Verifica se duas entidades são iguais.
+ * Função de utilidade.
 */
-const Battle &Battle::operator=(const Battle& other)
+bool Battle::areEntitiesEqual(Entity& primeiro, Entity& segundo)
 {
-    if (this != &other)
-    {
-        if (other.primeiro_ptr != nullptr)
-            this->primeiro_ptr = other.primeiro_ptr;
-        if (other.segundo_ptr != nullptr)
-            this->segundo_ptr = other.segundo_ptr;
-        if (other.attack_primeiro_ptr != nullptr)
-            this->attack_primeiro_ptr = other.attack_segundo_ptr;
-        if (other.attack_segundo_ptr != nullptr)
-            this->attack_segundo_ptr = other.attack_segundo_ptr;
-    }
-    return *this;
+    Player* first_player_ptr = nullptr;
+    Player* second_player_ptr = nullptr;
+
+    Enemy* first_enemy_ptr = nullptr;
+    Enemy* second_enemy_ptr = nullptr;
+
+    first_player_ptr    = dynamic_cast<Player*> (&primeiro);
+    second_player_ptr   = dynamic_cast<Player*> (&segundo);
+
+    if (first_player_ptr != nullptr && second_player_ptr != nullptr)
+        return ( *first_player_ptr == *second_player_ptr );
+
+    first_enemy_ptr = dynamic_cast<Enemy*> (&primeiro);
+    second_enemy_ptr = dynamic_cast<Enemy*> (&segundo);
+
+    if (first_enemy_ptr != nullptr && second_enemy_ptr != nullptr)
+        return ( *first_enemy_ptr == *second_enemy_ptr );
+
+    return false;
 }

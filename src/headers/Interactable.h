@@ -8,7 +8,14 @@ using std::cout;
 using std::string;
 using std::ostream;
 
-class Interactable
+#include "GameObject.h" 
+#include "Entity.h"
+
+enum InteractionFlags {
+    DAMAGE, HEAL, SHOW_MESSAGE
+};
+
+class Interactable : public GameObject
 {
     friend ostream& operator<<  ( ostream&, const Interactable& );
     friend int      operator!   ( const Interactable& );
@@ -18,7 +25,9 @@ public:
     Interactable            ( const Interactable& );
     virtual ~Interactable   (  );
 
-    void            interact        (  );
+    void interact   (  ) override;
+    void do_something_to_entity( Entity&, InteractionFlags );
+    void changeFlag( InteractionFlags );
     
     inline char getRepresentation()     const { return this->actual_representation;    }
     inline char getBefore()     const { return this->before_interaction;    }
@@ -35,6 +44,12 @@ protected:
     char actual_representation;
     char before_interaction;
     char after_interaction;
+
+    double health_factor;
+    string message;
+
+    InteractionFlags current_flag;
+    Entity* entity_to_afect = nullptr;
 };
 
 #endif // INTERACTABLE_H

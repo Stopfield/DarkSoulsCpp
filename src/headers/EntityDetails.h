@@ -1,8 +1,9 @@
 #ifndef ENTITY_DETAILS_H
 #define ENTITY_DETAILS_H
 
-#include "Item.h"
 #include <string>
+
+class Item;
 
 /* Item dentro de um inventário */
 struct InventoryItem

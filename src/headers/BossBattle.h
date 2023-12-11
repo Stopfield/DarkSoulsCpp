@@ -20,12 +20,13 @@ public:
     bool begin_battle( ) override;
     void add_phase( Enemy& );
 
+    void toNextPhase    ( );
+
     const BossBattle& operator= ( const BossBattle& );
     int operator==              ( const BossBattle& );
     int operator!=              ( const BossBattle& );
 
 protected:
-    void copyBossPhases( const BossBattle& );
     vector<Enemy*> boss_phases;
     int phase_number;
 };

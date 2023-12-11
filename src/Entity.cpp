@@ -27,7 +27,8 @@ Entity::Entity( string name,
                 double strength,
                 double dexterity,
                 Vector2D position,
-                vector< BodyPart > bodyParts ) : GameObject( position, 'E' )
+                vector< BodyPart > bodyParts )
+: GameObject( position, 'E' )
 {
     this->setName( name );
     this->setMaxHealth( health );
@@ -44,7 +45,8 @@ Entity::Entity( string name,
     this->inventory_ptr = new vector< InventoryItem* >;
 }
 
-Entity::Entity( const Entity& other ) : GameObject( static_cast<GameObject> (other) )
+Entity::Entity( const Entity& other )
+: GameObject( other )
 {
     this->name = other.name;
     this->health = other.health;
@@ -55,6 +57,9 @@ Entity::Entity( const Entity& other ) : GameObject( static_cast<GameObject> (oth
     this->guarding = other.guarding;
 
     this->copyWeapon( other.equiped_weapon_ptr );
+
+    this->isUsingRangedWeapon = other.isUsingRangedWeapon;
+
     this->copyInventory( other.inventory_ptr );
 
     this->bodyParts = other.bodyParts;
@@ -62,9 +67,6 @@ Entity::Entity( const Entity& other ) : GameObject( static_cast<GameObject> (oth
 
 Entity::~Entity()
 {
-    if (this->equiped_weapon_ptr)
-        delete this->equiped_weapon_ptr;
-
     if (this->inventory_ptr == 0)
         return;
 
@@ -116,11 +118,17 @@ void Entity::move( Direction where )
  * Equipa uma arma.
  * @param weapon Arma a ser equipada - pegue da base de dados!
 */
-void Entity::equipWeapon( const Weapon& weapon )
+void Entity::equipWeapon( Weapon* weapon_ptr )
 {
-    if (this->equiped_weapon_ptr != 0)
-        delete this->equiped_weapon_ptr;
-    this->equiped_weapon_ptr = new Weapon( weapon );
+    // Tã usando long ranged?
+    LongRangeWeapon* long_range_wpn = dynamic_cast<LongRangeWeapon*> (weapon_ptr);
+
+    if (long_range_wpn != nullptr)
+        this->isUsingRangedWeapon = true;
+    else
+        this->isUsingRangedWeapon = false;
+
+    this->equiped_weapon_ptr = weapon_ptr;
 }
 
 /**
@@ -130,7 +138,11 @@ void Entity::equipWeapon( const Weapon& weapon )
  * @param other Entidade que vai ser atacada.
  * @param attack Ataque a ser utilizado
 */
-void Entity::attack( Entity& other, const Attack& attack)
+void Entity::attack(
+    Entity& other,
+    const Attack *const attack,
+    size_t aim_index 
+)
 {
     if (this->equiped_weapon_ptr == 0)
     {
@@ -138,20 +150,49 @@ void Entity::attack( Entity& other, const Attack& attack)
         return;
     }
 
-    // Get BodyPart damage modifier
+    /* Verificamos se a arma equipada é LongRanged */
+    if (this->isUsingRangedWeapon)
+    {
+        LongRangeWeapon* long_range_wpn_ptr
+            = dynamic_cast<LongRangeWeapon*> (this->equiped_weapon_ptr);
+        long_range_wpn_ptr->aim_at( other, aim_index );
+        long_range_wpn_ptr->use( other );
+
+        cout << this->name << " mira em "
+            << other.getBodyParts().at(aim_index).partDescription << "\n";
+
+        if (long_range_wpn_ptr->isTargetHit())
+        {
+            double damage = long_range_wpn_ptr->getDamage()
+                        * other.getBodyParts().at(aim_index).damageModifier;
+            cout << this->name << " acerta " << other.name 
+                << " em " << other.getBodyParts().at(aim_index).partDescription  << "!\n";
+            cout << this->name << " dá " << damage << " de dano!\n";
+            return;
+        }
+
+        cout << "Mas erra! O projétil passa voando por " << other.name << "!\n";
+        return;
+    }
+
+    /* Se não está usando LongRanged está usando Melee! */
+    MeleeWeapon* melee_wpn_ptr
+        = dynamic_cast<MeleeWeapon*> (this->equiped_weapon_ptr);
+
     BodyPart randBodyPart = other.chooseRandBodyPart();
 
-    double dmgModifier =
-        this->calculateDamageModifier() * attack.getDamageModifier() * randBodyPart.damageModifier;
+    double dmgModifier = this->calculateDamageModifier()
+                            * attack->getDamageModifier()
+                            * randBodyPart.damageModifier;
     double damage = this->equiped_weapon_ptr->getDamage() * dmgModifier;
 
-    other.receiveDamage( damage);
-    this->equiped_weapon_ptr->decreaseDurability( 1 );
-
-    cout << this->name << " " << attack.getDisplayMessage() << "\n";
+    cout << this->name << " " << attack->getDisplayMessage() << "\n";
     cout << this->name << " acerta " << other.name
         << " em " << randBodyPart.partDescription << "!\n";
     cout << this->name << " dá " << damage << " de dano!\n";
+    melee_wpn_ptr->choose_attack(*attack);
+    melee_wpn_ptr->use( other );
+    return;
 }
 
 /**
@@ -162,6 +203,7 @@ void Entity::receiveDamage( double amount )
 {
     if (amount < 0)
         return;
+    std::cout << amount << std::endl;
     this->setHealth( this->health - amount );
 }
 
@@ -173,8 +215,6 @@ double Entity::calculateDamageModifier( )
     return ( (this->strength * 1.10) + (this->dexterity * 1.05) ) / 100;
 }
 
-
-
 /**
  * Escolhe uma parte aleatória da Entidade e a retorna.
  * @returns BodyPart escolhida aleatoriamente
@@ -184,6 +224,17 @@ const BodyPart &Entity::chooseRandBodyPart() const
     srand(time(NULL));
     size_t randIndex = rand() % this->bodyParts.size();
     return this->bodyParts[ randIndex ]; 
+}
+
+/**
+ * Escolhe uma parte aleatória da Entidade e a retorna.
+ * @returns BodyPart escolhida aleatoriamente
+*/
+size_t Entity::chooseRandBodyPartIndex() const
+{
+    srand(time(NULL));
+    size_t randIndex = rand() % this->bodyParts.size();
+    return randIndex;
 }
 
 /**
@@ -219,15 +270,15 @@ void Entity::grabItem( Item& picked_item )
             return;
         }
     }
-
     this->inventory_ptr->push_back( new InventoryItem { &picked_item, 1 } );
 }
 
 /**
- * Usa um item do inventário.
+ * Usa um item do inventário em alguma entidade.
+ * Não pode usar um item que não seja consumível!
  * @param item Item a ser usado
 */
-void Entity::useItem( Item& item_to_use )
+void Entity::useItemOn( Entity& ent, Item& item_to_use )
 {
     Consumable* consumable_ptr = dynamic_cast<Consumable*> (
         &item_to_use
@@ -239,7 +290,9 @@ void Entity::useItem( Item& item_to_use )
             << "! It's unconsumable!\n";
         return;
     }
-    
+
+    /* Use and discard */
+    consumable_ptr->use( ent );
     for (auto& itemAndQuantities : *this->inventory_ptr)
     {
         if (itemAndQuantities->item->getName() == item_to_use.getName()
@@ -249,16 +302,14 @@ void Entity::useItem( Item& item_to_use )
             return;
         }
     }
-    
 }
 
 /**
- * Usa um item do inventário.
+ * Usa um item do inventário em alguma entidade.
  * @param inventory_index Índice do item no inventário
 */
-void Entity::useItem( size_t inventory_index )
+void Entity::useItemOn( Entity& ent, size_t inventory_index )
 {
-
     Item* item_at_index = this->inventory_ptr->at( inventory_index )->item;
     int item_qts        = this->inventory_ptr->at( inventory_index )->quantity;
     
@@ -272,6 +323,8 @@ void Entity::useItem( size_t inventory_index )
         return;
     }
     
+    /* Use and discard */
+    consumable_ptr->use( ent );
     if (inventory_index >= 0 && inventory_index < this->inventory_ptr->size()
         && item_qts > 0 )
     {
@@ -314,7 +367,28 @@ void Entity::copyWeapon( const Weapon* const otherWeapon )
         this->equiped_weapon_ptr = 0;
         return;
     }
-    this->equiped_weapon_ptr = new Weapon( *otherWeapon );
+
+    /**
+     * Verifica se é LongRanged ou Melee pra fzr a cópia direito.
+     * Usa MAGIA NEGRA, cuidado!
+    */
+    const LongRangeWeapon *const long_range_wpn_ptr
+        = dynamic_cast<const LongRangeWeapon *const> (otherWeapon);
+    if (long_range_wpn_ptr != nullptr)
+    {
+        this->equiped_weapon_ptr = new LongRangeWeapon( *long_range_wpn_ptr );
+        return;
+    }
+
+    const MeleeWeapon *const melee_wpn_ptr
+        = dynamic_cast<const MeleeWeapon *const> (otherWeapon);
+    if (melee_wpn_ptr != nullptr)
+    {
+        this->equiped_weapon_ptr = new MeleeWeapon( *melee_wpn_ptr );
+        return;
+    }
+    this->equiped_weapon_ptr = 0;
+    return;
 }
 
 /**
@@ -508,69 +582,3 @@ void Entity::setBodyParts( vector< BodyPart >& bodyParts )
 }
 
 #pragma endregion
-
-#pragma region OperatorOverloads
-
-ostream &operator<<(ostream& output, const Entity& entity )
-{
-    output << " === Entity " << entity.name << " === \n";
-    output << "Entity: " << entity.name << "\n";
-    output << "Health: " << entity.health << "\n";
-    output << "Stamina: " << entity.stamina << "\n";
-    output << "Strength: " << entity.strength << "\n";
-    output << "Dexterity: " << entity.dexterity;
-    if (entity.equiped_weapon_ptr == 0)
-    {
-        output << "\n === Weapon === \n";
-        output << " Unarmed \n";
-    }
-    else
-        output << *entity.equiped_weapon_ptr;
-    output << " === Body Parts === \n";
-    for (const auto& part : entity.bodyParts)
-        output << part.partDescription << "\n";
-    output << " ======================== \n";
-    return output;
-}
-
-int operator! (const Entity& right)
-{
-    return ( right.name.empty() || right.name == Entity::DEFAULT_NAME );
-}
-
-const Entity& Entity::operator= ( const Entity& right )
-{
-    if (this != &right)
-    {
-        static_cast<GameObject> (*this) = static_cast<GameObject> (right);
-        this->name = right.name;
-        this->maxHealth = right.maxHealth;
-        this->health = right.health;
-        this->stamina = right.stamina;
-        this->strength = right.strength;
-        this->dexterity = right.dexterity;
-        this->bodyParts = right.bodyParts;
-
-        this->copyWeapon( right.equiped_weapon_ptr );
-        this->copyInventory( right.inventory_ptr );
-    }
-    return *this;
-}
-
-int Entity::operator==(const Entity& right)
-{
-    if (this->name == right.name
-        && static_cast<GameObject> (*this) == static_cast<GameObject> (right))
-    {
-        return 1;
-    }
-    return 0;
-}
-
-int Entity::operator!=(const Entity& right)
-{
-    return !( *this == right );
-}
-
-#pragma endregion
-

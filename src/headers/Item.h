@@ -8,27 +8,23 @@ using std::cout;
 using std::string;
 using std::ostream;
 
-#include "Interactable.h"
+class Entity;
 
-class Item : public Interactable
+class Item
 {
-    friend ostream& operator<<  ( ostream&, const Item& );
-    friend int      operator!   ( const Item& );
 public:
     Item            ( );
     Item            ( string, string );
     Item            ( const Item& );
     virtual ~Item   ( );
-    
+
+    virtual void use( Entity& ) = 0;
+
     inline string getName()         const { return this->name;          }
     inline string getDescription()  const { return this->description;   }
 
     void setName            ( string );
     void setDescription     ( string );
-
-    const Item& operator=   ( const Item& );
-    int         operator==  ( const Item& );
-    int         operator!=  ( const Item& );
 
 protected:
     const static u_int8_t   MAX_ITEM_STACK;

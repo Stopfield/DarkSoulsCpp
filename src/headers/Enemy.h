@@ -32,22 +32,21 @@ public:
     Enemy   ( const Enemy& );
     virtual ~Enemy  ( );
 
-    /* Métodos static não podem ser const */
-    inline static unsigned short getNumEnemies() { return Enemy::numEnemies; }
-    map< int, Attack* > *const getAttacksAndProbabilities() { return &this->probabilitiesAndAttacks; };
-
+    void interact() override;
 
     const Attack *const chooseAttack            (  );
     void enrageEnemy                ( Enemy& )  const;
     void addAttackAndProbability    ( Attack*, int );
+
+    /* Métodos static não podem ser const */
+    inline static unsigned short getNumEnemies() { return Enemy::numEnemies; }
+    map<int, Attack*> *const getAttacksAndProbabilities() { return &this->probabilitiesAndAttacks; };
 
     const Enemy&    operator=   ( const Enemy& );
     int             operator==  ( const Enemy& );
     int             operator!=  ( const Enemy& );
 
 private:
-    bool compareAttacks( const Enemy& );
-
     const static unsigned int   MAX_NUM_ENEMIES;
     const static unsigned short MIN_ENEMIES_TO_RAGE;
     

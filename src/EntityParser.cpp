@@ -162,7 +162,7 @@ Entity* EntityParser::parseFile( std::ifstream& input_stream )
     size_t equal_sign_index;
 
     Vector2D*   new_position_ptr    = 0;
-    Entity*     new_entity_ptr      = new Entity();
+    Player*     new_entity_ptr      = new Player();
 
     vector<BodyPart>    entity_body_parts;
     BodyPart*           new_part_ptr;

@@ -27,9 +27,40 @@ void Interactable::interact()
     if (this->actual_representation == this->before_interaction)
     {
         this->actual_representation = this->after_interaction;
+        this->do_something_to_entity( *this->entity_to_afect, this->current_flag );
         return;
     }
     this->actual_representation = this->before_interaction;
+    this->do_something_to_entity( *this->entity_to_afect, this->current_flag );
+}
+
+/**
+ * Dependendo da flag passada, o interactable faz alguma coisa
+*/
+void Interactable::do_something_to_entity(Entity& ent, InteractionFlags flag)
+{
+    switch (flag)
+    {
+    case DAMAGE:
+        ent.receiveDamage( health_factor );
+        std::cout << message << "\n";
+        break;
+    
+    case HEAL:
+        ent.heal( health_factor );
+        std::cout << message << "\n";
+        break;
+
+    case SHOW_MESSAGE:
+        std::cout << "O objeto diz: \"" << message << "\"\n";
+        break;
+    }
+}
+
+/* Não precisa de checagem, o tipo InteractionFlags só garante um conjunto de valores */
+void Interactable::changeFlag(InteractionFlags new_flag)
+{
+    this->current_flag = new_flag;
 }
 
 ostream &operator<<(ostream& output, const Interactable& inter)
@@ -70,6 +101,11 @@ const Interactable &Interactable::operator=(const Interactable& other)
 {
     if (this != &other)
     {
+        this->representation = other.representation;
+        if (other.position != nullptr)
+            this->position = new Vector2D { other.position->x, other.position->y };
+        else
+            this->position = nullptr;
         this->after_interaction = other.after_interaction;
         this->before_interaction = other.before_interaction;
     }

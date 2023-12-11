@@ -25,6 +25,8 @@ public:
     Player( const Player& );
     virtual ~Player();
 
+    void interact() override;
+
     // void receiveInput   ( );
     void addAttack      ( Attack& );
  
@@ -38,7 +40,6 @@ public:
 private:
     void copyAttacks        ( const Player& );
     void deleteAttacks      (  );
-    bool compareAttacks     ( const Player& );
 
     static unsigned int numPlayers;
     vector< Attack* >   attacks;        // É melhor um ponteiro de ataques ou só ataques?

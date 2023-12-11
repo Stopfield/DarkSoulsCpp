@@ -15,7 +15,10 @@ using std::vector;
 #include "InventoryParser.h"
 #include "BodyPartsParser.h"
 #include "EntityDetails.h"
+#include "Player.h"
 #include "Entity.h"
+
+// TODO: Ajeitar parsers
 
 class EntityParser
 {

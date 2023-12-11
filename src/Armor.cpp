@@ -2,7 +2,7 @@
 
 const string Armor::DEFAULT_ARMOR_NAME    = "Empty Armor";
 
-Armor::Armor() : Item()
+Armor::Armor() : Item( )
 {
     this->damage_reduction = 0.0f;
     this->min_strength = 0.0f;
@@ -19,7 +19,7 @@ Armor::Armor(double damage_reduction, double min_strength, double weight) : Item
     this->setWeight( weight );
 }
 
-Armor::Armor( const Armor& other ) : Item( static_cast<Armor> (other) )
+Armor::Armor( const Armor& other ) : Item( other )
 {
     this->damage_reduction = other.damage_reduction;
     this->min_strength = other.min_strength;
@@ -27,6 +27,10 @@ Armor::Armor( const Armor& other ) : Item( static_cast<Armor> (other) )
 }
 
 Armor::~Armor()
+{
+}
+
+void Armor::use( Entity& )
 {
 }
 
@@ -66,14 +70,13 @@ void Armor::setWeight( double weight )
 
 #pragma region Operator Overloads
 
-ostream& operator<< (ostream& output, const Armor& armor)
+ostream& operator<< (ostream& output, const Armor& Armor)
 {
-    output << static_cast<Item> (armor);
     output << "\n======   Armor   =====\n";
-    output << "* " << armor.name << "\n";
-    output << "* Damage Reduction: \t" << armor.damage_reduction << "\n";
-    output << "* Strength required: \t" << armor.min_strength << "\n";
-    output << "* Weight: \t" << armor.weight << "\n";
+    output << "* " << Armor.name << "\n";
+    output << "* Damage Reduction: \t" << Armor.damage_reduction << "\n";
+    output << "* Strength required: \t" << Armor.min_strength << "\n";
+    output << "* Weight: \t" << Armor.weight << "\n";
     return output;  
 }
 
@@ -86,20 +89,20 @@ const Armor &Armor::operator=(const Armor &right)
 {
     if (&right != this)
     {
-        static_cast<Item> (*this) = static_cast<Item> (right);
-        this->damage_reduction = right.damage_reduction;
-        this->min_strength = right.min_strength;
-        this->weight = right.weight;
+        this->name              = right.name;
+        this->description       = right.description;
+        this->damage_reduction  = right.damage_reduction;
+        this->min_strength      = right.min_strength;
+        this->weight            = right.weight;
     }
     return *this;
 }
 
 int Armor::operator== (const Armor& right )
 {
-    return ( static_cast<Item> (*this) == static_cast<Item> (right)
-            && this->damage_reduction == right.damage_reduction
-            && this->weight == right.weight
-            && this->min_strength == right.min_strength );
+    if (this->name == right.name)
+        return 1;
+    return 0;
 }
 
 int Armor::operator!= (const Armor& right)

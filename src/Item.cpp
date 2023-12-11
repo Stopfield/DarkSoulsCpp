@@ -6,19 +6,19 @@ const size_t    Item::MAX_DESCRIPTION_SIZE  = 60;
 const string    Item::DEFAULT_ITEM_NAME     = "Empty Item";
 const string    Item::DEFAULT_DESCRIPTION   = "Nothing";
 
-Item::Item() : Interactable()
+Item::Item()
 {
     this->name = Item::DEFAULT_ITEM_NAME;
     this->description = Item::DEFAULT_DESCRIPTION;
 }
 
-Item::Item( string name, string description) : Interactable()
+Item::Item( string name, string description)
 {
     this->setName(name);
     this->setDescription(description);
 }
 
-Item::Item( const Item& other ) : Interactable( other )
+Item::Item( const Item& other )
 {
     this->name = other.name;
     this->description = other.description;
@@ -60,47 +60,6 @@ void Item::setDescription(string description)
     }
 
     this->description = description;
-}
-
-#pragma endregion
-
-#pragma region OperatorOverloads
-
-ostream& operator<< ( ostream& output, const Item& item )
-{
-    output << static_cast<Interactable> (item);
-    output << item.name << " | " << item.description;
-    return output;
-}
-
-int operator! ( const Item& right )
-{
-    return !(right.name.empty() || right.name == Item::DEFAULT_ITEM_NAME);
-}
-
-const Item& Item::operator= ( const Item& right )
-{
-    if (&right != this)
-    {
-        static_cast<Interactable> (*this) = static_cast<Interactable> (right);
-        this->name = right.name;
-        this->description = right.description;
-    }   
-    return *this;
-}
-
-int Item::operator== ( const Item& right )
-{
-
-    if ( static_cast<Interactable> (*this) == static_cast<Interactable> (right)
-        && this->name == right.name)
-        return 1;
-    return 0;
-}
-
-int Item::operator!= (const Item& right)
-{
-    return !( *this == right );
 }
 
 #pragma endregion

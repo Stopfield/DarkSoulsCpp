@@ -11,11 +11,12 @@ BossBattle::BossBattle(Entity& primeiro ) : Battle()
     this->phase_number = 0;
 }
 
-BossBattle::BossBattle(const BossBattle& other) : Battle( other )
+BossBattle::BossBattle(const BossBattle& other)
 {
+    this->primeiro_ptr = other.primeiro_ptr;
     this->phase_number = other.phase_number;
-    this->segundo_ptr = other.segundo_ptr;
-    this->copyBossPhases( other );
+    // Receber vetores de fases
+    
 }
 
 BossBattle::~BossBattle()
@@ -28,6 +29,12 @@ BossBattle::~BossBattle()
 */
 bool BossBattle::begin_battle()
 {
+    Attack* primeiro_atk_ptr = nullptr;
+    Attack* segundo_atk_ptr = nullptr;
+
+    size_t primeiro_aim_index = 0;
+    size_t segundo_aim_index = 0;
+    
     size_t chosen_attack;
 
     // Verifica se é Player ou Enemy
@@ -46,17 +53,35 @@ bool BossBattle::begin_battle()
             std::cout << " | " << player_ptr->getName() << "\t|\t * " << enemy_ptr->getName() << " * \t|\n";
             std::cout << " | " << player_ptr->getHealth() << "\t\t|\t" << enemy_ptr->getHealth() << "\t|\n";
             std::cout << "==========================\n";
-            std::cout << "Escolha seu ataque!\n";
-            std::cout << "==========================\n";
-            for ( size_t i = 0; i < player_ptr->getAttacks().size(); ++i)
+
+            if (player_ptr->isLongRangeEquipped() == true)
             {
-                std::cout << "( " << i << " ) - " << *player_ptr->getAttacks().at(i) << "\n"; 
+                std::cout << "Escolha onde atacar!\n";
+                std::cout << "==========================\n";
+
+                for (size_t i = 0; i < enemy_ptr->getBodyParts().size(); ++i)
+                    std::cout << "( " << i << ") - " << enemy_ptr->getBodyParts().at(i).partDescription << "\n";
+
+                std::cout << "Escolha: ";
+                std::cin >> chosen_attack;
+
+                primeiro_atk_ptr = nullptr;
+                primeiro_aim_index = chosen_attack;
             }
-            std::cout << "Escolha: ";
-            std::cin >> chosen_attack;
+            else
+            {
+                std::cout << "Escolha seu ataque!\n";
+                std::cout << "==========================\n";
+                for ( size_t i = 0; i < player_ptr->getAttacks().size(); ++i)
+                    std::cout << "( " << i << " ) - " << *player_ptr->getAttacks().at(i) << "\n"; 
+                std::cout << "Escolha: ";
+                std::cin >> chosen_attack;
+                primeiro_atk_ptr = player_ptr->getAttacks().at( chosen_attack );
+            }
 
             this->planTurn(
-                *player_ptr->getAttacks().at( chosen_attack ),  *enemy_ptr->chooseAttack()
+                primeiro_atk_ptr, chosen_attack,
+                enemy_ptr->chooseAttack(), player_ptr->chooseRandBodyPartIndex()
             );
             system("clear");
             this->executeTurn();
@@ -73,21 +98,11 @@ bool BossBattle::begin_battle()
         }
 
         if ( player_ptr->getHealth() <= 0 )
-        {
-            system("clear");
-            std::cout << "GAME OVER\n";
-            std::cin >> chosen_attack;
             return false;
-        }
     }
 
     if ( player_ptr->getHealth() > 0 )
-    {
-        system("clear");
-        std::cout << "VOCÊ GANHOU!\n";
-        std::cin >> chosen_attack;
         return true;
-    }
     return false;
 }
 
@@ -98,13 +113,11 @@ void BossBattle::add_phase( Enemy& phase )
     this->boss_phases.push_back( new_phase );
 }
 
-void BossBattle::copyBossPhases(const BossBattle& other)
+void BossBattle::toNextPhase()
 {
-    if (other.boss_phases.empty())
-        return;
-    for (auto& phase : other.boss_phases )
-        this->add_phase( *phase );
+
 }
+
 
 ostream &operator<<(ostream& output, const BossBattle& battle)
 {
@@ -129,6 +142,7 @@ const BossBattle& BossBattle::operator=(const BossBattle& other)
     {
         Enemy* enemy_ptr;
         Player* player_ptr;
+        
         // Is primeiro_ptr a player or an enemy?
         player_ptr = dynamic_cast<Player*> (other.primeiro_ptr);
         if (player_ptr == nullptr)
@@ -161,8 +175,10 @@ const BossBattle& BossBattle::operator=(const BossBattle& other)
 
 int BossBattle::operator==( const BossBattle& other )
 {
-    return ( *this->primeiro_ptr == *other.primeiro_ptr 
-            && *this->segundo_ptr == *other.segundo_ptr );
+    return (
+            this->areEntitiesEqual( *this->primeiro_ptr, *other.primeiro_ptr ) 
+        &&  this->areEntitiesEqual( *this->segundo_ptr,  *other.segundo_ptr  )
+    );
 }
 
 int BossBattle::operator!=( const BossBattle& other )

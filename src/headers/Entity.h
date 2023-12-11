@@ -12,21 +12,18 @@ using std::string;
 using std::vector;
 using std::map;
 
-#include "Weapon.h"
-#include "Item.h"
-#include "Consumable.h"
+#include "EntityDetails.h"
 #include "Attack.h"
 #include "GameObject.h"
-#include "EssentialStructs.h"
+#include "LongRangeWeapon.h"
+#include "MeleeWeapon.h"
+#include "Consumable.h"
 
 /* Define as partes default de vector< BodyPart > */
 #define DEFAULT_ENTITY_BODY_PARTS { \
     { "HEAD" , 2.0f }, \
     { "FRONT", 1.0f }, \
     { "BACK", 1.5f  } }
-
-#include "EntityDetails.h"
-#include "Item.h"
 
 class Item;
 
@@ -49,34 +46,38 @@ public:
     Entity                  ( const Entity& );
     virtual ~Entity         ( );
 
+    virtual void interact() = 0;
 
     void    move                        ( Direction );
-    void    equipWeapon                 ( const Weapon& );
-    void    attack                      ( Entity&, const Attack& );
+    void    equipWeapon                 ( Weapon* );
+    void    attack                      ( Entity&, const Attack *const, size_t = 0 );
     void    receiveDamage               ( double );
     double  calculateDamageModifier     (  );
     void    heal                        ( double );
     void    guard                       ( );
     void    grabItem                    ( Item& );
-    void    useItem                     ( Item& );
-    void    useItem                     ( size_t );
+    void    useItemOn                   ( Entity&, Item& );
+    void    useItemOn                   ( Entity&, size_t );
 
     void showInventory                  ( ) const;
     const BodyPart& chooseRandBodyPart  ( ) const;
+    size_t chooseRandBodyPartIndex( ) const;
+
 
     // void battle     ( Entity& );
 
     inline bool isUnarmed()     const { return (equiped_weapon_ptr == 0) ? true : false; }
     inline bool isGuarding()    const { return this->guarding; }
+    inline bool isLongRangeEquipped( )  { return this->isUsingRangedWeapon; }
 
-    inline string   getName()           const   { return this->name;        }
-    inline double   getMaxHealth()      const   { return this->maxHealth;   }
-    inline double   getHealth()         const   { return this->health;      }
-    inline double   getStrength()       const   { return this->strength;    }
-    inline double   getStamina()        const   { return this->stamina;     }
-    inline double   getDexterity()      const   { return this->dexterity;   }
+    inline string   getName()               const   { return this->name;                }
+    inline double   getMaxHealth()          const   { return this->maxHealth;           }
+    inline double   getHealth()             const   { return this->health;              }
+    inline double   getStrength()           const   { return this->strength;            }
+    inline double   getStamina()            const   { return this->stamina;             }
+    inline double   getDexterity()          const   { return this->dexterity;           }
 
-    inline vector<BodyPart>&          getBodyParts() { return this->bodyParts; }
+    inline vector<BodyPart>&                getBodyParts() { return this->bodyParts; }
     inline const vector<InventoryItem*>&    getInventory() const { return *this->inventory_ptr; }
     
     inline const Weapon& getEquipedWeapon() const { return *this->equiped_weapon_ptr; }
@@ -94,7 +95,7 @@ public:
     int             operator==  ( const Entity& );
     int             operator!=  ( const Entity& );
 
-private:
+protected:
 
     static bool isBodyPartValid( BodyPart& );
 
@@ -115,6 +116,7 @@ private:
     double  dexterity;   // O quão rápido a Stamina sobe
     bool    guarding;
     vector< BodyPart > bodyParts;
+    bool isUsingRangedWeapon;
 
     Weapon* equiped_weapon_ptr = 0;                 // Arma equipada pela entidade
     vector< InventoryItem* >* inventory_ptr = 0;        // Inventário da entidade
