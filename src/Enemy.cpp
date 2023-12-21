@@ -98,7 +98,6 @@ bool Enemy::interact( GameObject& other )
         return true;
     else
         return false;
-
 }
 
 /**
