@@ -14,6 +14,8 @@ using std::rand;
 using std::time;
 
 #include "Entity.h"
+#include "Interactable.h"
+#include "Player.h"
 
 class Enemy : public Entity
 {
@@ -32,7 +34,7 @@ public:
     Enemy   ( const Enemy& );
     virtual ~Enemy  ( );
 
-    void interact() override;
+    bool interact( GameObject& ) override;
 
     const Attack *const chooseAttack            (  );
     void enrageEnemy                ( Enemy& )  const;

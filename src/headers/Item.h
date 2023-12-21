@@ -12,6 +12,8 @@ class Entity;
 
 class Item
 {
+    friend ostream& operator<<  ( ostream&, const Item& );
+    friend int      operator!   ( const Item& );
 public:
     Item            ( );
     Item            ( string, string );
@@ -25,6 +27,9 @@ public:
 
     void setName            ( string );
     void setDescription     ( string );
+    const Item&     operator=       ( const Item& );
+    int             operator==      ( const Item& );
+    int             operator!=      ( const Item& );
 
 protected:
     const static u_int8_t   MAX_ITEM_STACK;

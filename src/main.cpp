@@ -2,7 +2,6 @@
 #include <iostream>
 
 #include "Armor.h"
-#include "Entity.h"
 #include "Consumable.h"
 #include "Attack.h"
 #include "Player.h"
@@ -26,43 +25,26 @@
 
 int main()
 {
-    LongRangeWeapon arco("Arco", 15.0f, 10.0f);
-    MeleeWeapon martelo("Martelo", 20.0f, 1.5f);
-    OffensiveConsumable bomba("Bomba", "Explode", 0.25f);
-    RestorativeConsumable estus_flask("Estus Flask", "Recupera vida", 2.0f);
+    std::ifstream attack_stream ("../Attack.sav");
+    Attack* new_attack = AttackParser::loadFromStream(attack_stream);
+    std::cout << *new_attack;
 
-    Attack *const estocada = new Attack("Estocada", 10.0f, 2.0f, "estoca o inimigo!");
+    std::ifstream entity_stream ("../Hero.sav");
+    Player* new_player = PlayerParser::loadFromStream(entity_stream);
+    std::cout << *new_player;
 
-    Player thiago("Thiago");
-    Enemy jonas("Jonas");
-    Enemy ultron("Ultron");
+    std::ifstream enemy_stream ("../Enemy.sav");
+    Enemy* new_enemy = EnemyParser::loadFromStream(enemy_stream);
+    std::cout << *new_enemy;
 
-    thiago.grabItem( arco );
-    thiago.grabItem( estus_flask );
-    thiago.grabItem( bomba );
+    bool game_loop = true;
 
-    // thiago.showInventory();
-    thiago.useItemOn( thiago, 2 );
+    while (game_loop) {
+        game_loop = false;
+    }
 
-    thiago.equipWeapon( &martelo );
-    thiago.addAttack(*estocada);
-    jonas.equipWeapon( &arco );
-
-    NPC jorge;
-
-    jorge.add_to_monologue( "Testando" );
-    jorge.add_to_monologue( "Arqueiros para ali" );
-
-    NormalBattle nova_batalha( thiago, jonas );
-    BossBattle batalha_do_seculo(thiago);
-
-    std::cout << jonas.isLongRangeEquipped() << "\n";
-
-    batalha_do_seculo.add_phase( jonas );
-    batalha_do_seculo.add_phase( ultron );
-
-    batalha_do_seculo.begin_battle();
-
-    delete estocada;
+    delete new_enemy;
+    delete new_player;
+    delete new_attack;
     return 0;
 }

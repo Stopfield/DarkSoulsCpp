@@ -22,16 +22,17 @@ Interactable::~Interactable()
 {
 }
 
-void Interactable::interact()
+bool Interactable::interact( GameObject& other )
 {
     if (this->actual_representation == this->before_interaction)
     {
         this->actual_representation = this->after_interaction;
         this->do_something_to_entity( *this->entity_to_afect, this->current_flag );
-        return;
+        return true;
     }
     this->actual_representation = this->before_interaction;
     this->do_something_to_entity( *this->entity_to_afect, this->current_flag );
+    return true;
 }
 
 /**
@@ -101,11 +102,7 @@ const Interactable &Interactable::operator=(const Interactable& other)
 {
     if (this != &other)
     {
-        this->representation = other.representation;
-        if (other.position != nullptr)
-            this->position = new Vector2D { other.position->x, other.position->y };
-        else
-            this->position = nullptr;
+        GameObject::operator=(other);
         this->after_interaction = other.after_interaction;
         this->before_interaction = other.before_interaction;
     }
@@ -114,7 +111,8 @@ const Interactable &Interactable::operator=(const Interactable& other)
 
 int Interactable::operator==(const Interactable& other)
 {
-    return ( this->before_interaction == other.before_interaction
+    return ( GameObject::operator==(other)
+            && this->before_interaction == other.before_interaction
             && this->after_interaction == other.after_interaction );
 }
 

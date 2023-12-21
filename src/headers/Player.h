@@ -8,6 +8,7 @@ using std::string;
 using std::cout;
 
 #include "Entity.h"
+#include "Interactable.h"
 
 class Player : public Entity
 {
@@ -25,7 +26,7 @@ public:
     Player( const Player& );
     virtual ~Player();
 
-    void interact() override;
+    bool interact( GameObject& ) override;
 
     // void receiveInput   ( );
     void addAttack      ( Attack& );

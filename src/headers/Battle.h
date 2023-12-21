@@ -1,12 +1,20 @@
 #ifndef BATTLE_H
 #define BATTLE_H
 
+#include <iostream>
+
 #include "Entity.h"
+#include "Attack.h"
 #include "Player.h"
 #include "Enemy.h"
 
+using std::ostream;
+
 class Battle
 {
+    friend ostream& operator<<  ( ostream&, const Battle& );
+    friend bool areEntitiesEqual (Entity&, Entity&);
+
 public:
     Battle(  );
     Battle( Entity&, Entity& );
@@ -25,8 +33,11 @@ public:
     int     getTurno()      const { return this->turno;         }
     Entity* getPrimeiro()   const { return this->primeiro_ptr;  }
     Entity* getSegundo()    const { return this->segundo_ptr;   }
+
+    const Battle& operator=( const Battle& );
+    int             operator==      ( const Battle& );
+    int             operator!=      ( const Battle& );
 protected:
-    bool areEntitiesEqual (Entity&, Entity&);
 
     Entity* primeiro_ptr    = 0;
     Entity* segundo_ptr     = 0;

@@ -58,10 +58,7 @@ const MeleeWeapon &MeleeWeapon::operator=(const MeleeWeapon &right)
 {
     if (&right != this)
     {
-        this->name = right.name;
-        this->description = right.description;
-        this->damage = right.damage;
-        this->durability = right.durability;
+        Weapon::operator=(right);
         this->blunt_damage = right.blunt_damage;
     }
     return *this; 
@@ -69,7 +66,7 @@ const MeleeWeapon &MeleeWeapon::operator=(const MeleeWeapon &right)
 
 int MeleeWeapon::operator==(const MeleeWeapon& right)
 {
-    if (this->name == right.name)
+    if ( Weapon::operator==(right) && this->blunt_damage == right.blunt_damage)
         return 1;
     return 0;
 }

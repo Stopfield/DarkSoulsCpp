@@ -25,7 +25,7 @@ public:
     Interactable            ( const Interactable& );
     virtual ~Interactable   (  );
 
-    void interact   (  ) override;
+    bool interact   ( GameObject& ) override;
     void do_something_to_entity( Entity&, InteractionFlags );
     void changeFlag( InteractionFlags );
     

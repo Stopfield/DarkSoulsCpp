@@ -565,7 +565,7 @@ void Entity::setInventory(const vector<InventoryItem *>* const other_inventory)
     
 }
 
-void Entity::setBodyParts( vector< BodyPart >& bodyParts )
+void Entity::setBodyParts( vector< BodyPart > bodyParts )
 {
     if (bodyParts.empty())
     {
@@ -579,6 +579,63 @@ void Entity::setBodyParts( vector< BodyPart >& bodyParts )
         return;
     }
     this->bodyParts = bodyParts;
+}
+
+#pragma endregion
+
+#pragma region OperatorOverloads
+
+const Entity& Entity::operator=(const Entity& other)
+{
+    if (this != &other)
+    {
+        this->name = other.name;
+        this->maxHealth = other.maxHealth;
+        this->health = other.health;
+        this->stamina = other.stamina;
+        this->strength = other.strength;
+        this->dexterity = other.dexterity;
+
+        this->setBodyParts( other.bodyParts );
+        if (this->equiped_weapon_ptr != 0)
+            delete equiped_weapon_ptr;
+        this->copyWeapon( other.equiped_weapon_ptr );
+        this->copyInventory( other.inventory_ptr );
+    }
+
+    return *this;
+}
+
+int Entity::operator== (const Entity& right )
+{
+    return ( GameObject::operator==(right) && this->name == right.name );
+}
+
+int Entity::operator!= (const Entity& right )
+{
+    return !( *this == right );
+}
+
+ostream &operator<<(ostream& output, const Entity& entity )
+{
+    output << " === Entity " << entity.name << " === \n";
+    output << "Entity: " << entity.name << "\n";
+    output << "Health: " << entity.health << "\n";
+    output << "Stamina: " << entity.stamina << "\n";
+    output << "Strength: " << entity.strength << "\n";
+    output << "Dexterity: " << entity.dexterity;
+    if (entity.equiped_weapon_ptr == 0)
+    {
+        output << "\n === Weapon === \n";
+        output << " Unarmed \n";
+    }
+    else
+        output << *entity.equiped_weapon_ptr;
+    output << " === Body Parts === \n";
+    for (const auto& part : entity.bodyParts)
+        output << part.partDescription << "\n";
+    output << " ======================== \n";
+    return output;
 }
 
 #pragma endregion

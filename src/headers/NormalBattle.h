@@ -1,15 +1,14 @@
 #ifndef NORMAL_BATTLE_H
 #define NORMAL_BATTLE_H
 
-#include "Entity.h"
+#include "Battle.h"
 #include "Player.h"
 #include "Enemy.h"
-#include "Battle.h"
 
 class NormalBattle : public Battle
 {
     friend ostream& operator<<  ( ostream&, const NormalBattle& );
-    friend int      operator!   (const NormalBattle& );
+    friend int      operator!   ( const NormalBattle& );
 public:
     NormalBattle(  );
     NormalBattle( Entity&, Entity& );

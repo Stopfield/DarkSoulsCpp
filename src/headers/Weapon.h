@@ -14,6 +14,10 @@ class Entity;   /* Não precisa importar Entity, só precisa saber que tem */
 
 class Weapon : public Item
 {
+
+    friend ostream& operator<<  ( ostream&, const Weapon& );
+    friend int      operator!   ( const Weapon& );
+    
 public:
     Weapon();
     Weapon( string, double, int = 100 );
@@ -31,6 +35,9 @@ public:
 
     void setDurability  ( int );
     void setDamage      ( double );
+    const Weapon& operator= ( const Weapon& );
+    int             operator==      ( const Weapon& );
+    int             operator!=      ( const Weapon& );
 
 protected:
     const static string DEFAULT_WEAPON_NAME;

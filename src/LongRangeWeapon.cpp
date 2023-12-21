@@ -41,7 +41,7 @@ void LongRangeWeapon::inflict_damage( Entity& ent )
 /* Verifica se ocorre um acerto */
 bool LongRangeWeapon::verifyHit(Entity& ent)
 {
-    vector<BodyPart>& ent_parts = ent.getBodyParts();
+    const vector<BodyPart>& ent_parts = ent.getBodyParts();
     int chance = rand() % 100;
     if (chance < this->accuracy * 1.5f / ent_parts.at(this->body_part_index).damageModifier )
         return true;
@@ -77,10 +77,7 @@ const LongRangeWeapon &LongRangeWeapon::operator=(const LongRangeWeapon& right)
 {
     if (&right != this)
     {
-        this->name = right.name;
-        this->description = right.description;
-        this->damage = right.damage;
-        this->durability = right.durability;
+        Weapon::operator=(right);
         this->accuracy = right.accuracy;
     }
     return *this;   
@@ -88,7 +85,7 @@ const LongRangeWeapon &LongRangeWeapon::operator=(const LongRangeWeapon& right)
 
 int LongRangeWeapon::operator==(const LongRangeWeapon& right)
 {
-    if (this->name == right.name)
+    if ( Weapon::operator==(right) && this->accuracy == right.accuracy)
         return 1;
     return 0;
 }

@@ -63,3 +63,31 @@ void Item::setDescription(string description)
 }
 
 #pragma endregion
+
+#pragma region OperatorOverloads
+const Item& Item::operator= ( const Item& other )
+{
+    if (this != &other)
+    {
+        this->name = other.name;
+        this->description = other.description;
+    }
+    return *this;
+}
+
+int Item::operator== ( const Item& right )
+{
+    return (this->name == right.name);
+}
+
+ostream& operator<< ( ostream& output, const Item& item )
+{
+    output << item.name << " | " << item.description;
+    return output;
+}
+
+int operator!(const Item& right)
+{
+    return !( right.name.empty() || right.name == right.DEFAULT_ITEM_NAME );
+}
+#pragma endregion

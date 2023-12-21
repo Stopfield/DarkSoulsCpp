@@ -85,15 +85,20 @@ Enemy::~Enemy()
         if (probAndAtk.second)
             delete probAndAtk.second;
     numEnemies--;
+    std::cout << "Destrutor do Enemy\n";
 }
 
-void Enemy::interact()
+bool Enemy::interact( GameObject& other )
 {
-    char press_enter;
-    std::cout << "Você vê um inimigo! Ele corre na sua direção!\n";
-    std::cout << "Uma batalha começa!\n";
-    std::cin >> press_enter;
-    /* Chamar batalha */
+    char choice;
+    std::cout << "Você quer interagir com " << this->name << "?";
+    std::cin >> choice;
+
+    if (choice == 'Y')
+        return true;
+    else
+        return false;
+
 }
 
 /**
@@ -143,7 +148,7 @@ void Enemy::addAttackAndProbability( Attack* attack, int probability )
 
 ostream &operator<<(ostream& output, const Enemy& entity)
 {
-    output << " === Player Entity " << entity.name << " === \n";
+    output << " === Enemy Entity " << entity.name << " === \n";
     output << "Entity: " << entity.name << "\n";
     output << "Health: " << entity.health << "\n";
     output << "Stamina: " << entity.stamina << "\n";
@@ -186,26 +191,11 @@ int operator!(const Enemy& right)
     return ( right.name.empty() || right.name == right.DEFAULT_NAME );
 }
 
-const Enemy &Enemy::operator=(const Enemy& right)
+const Enemy& Enemy::operator=(const Enemy& right)
 {
     if (this != &right)
     {
-        if (right.position == 0)
-            this->position = 0;
-        else
-            this->position = new Vector2D { right.position->x, right.position->y };
-        
-        this->representation    = right.representation;
-        this->name              = right.name;
-        this->maxHealth         = right.maxHealth;
-        this->health            = right.health;
-        this->stamina           = right.stamina;
-        this->strength          = right.strength;
-        this->dexterity         = right.dexterity;
-        this->bodyParts         = right.bodyParts;
-
-        this->copyWeapon( right.equiped_weapon_ptr );
-        this->copyInventory( right.inventory_ptr );
+        Entity::operator=(right);
 
         // Copia map
         if (!right.probabilitiesAndAttacks.empty())
@@ -225,9 +215,8 @@ const Enemy &Enemy::operator=(const Enemy& right)
 
 int Enemy::operator==(const Enemy& right)
 {
-    if (this->name == right.name )
-        return 1;
-    return 0;}
+    return (Entity::operator==(right));
+}
 
 int Enemy::operator!=(const Enemy& other)
 {

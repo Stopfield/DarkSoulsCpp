@@ -32,8 +32,7 @@ class Item;
 */
 class Entity : public GameObject
 {
-    friend ostream& operator<<  ( ostream&, const Entity& );
-    friend int      operator!   ( const Entity& );
+    friend ostream& operator<<(ostream& , const Entity& );
 public:
     Entity                  ( );
     Entity                  (   string,
@@ -46,7 +45,7 @@ public:
     Entity                  ( const Entity& );
     virtual ~Entity         ( );
 
-    virtual void interact() = 0;
+    virtual bool interact( GameObject& ) = 0;
 
     void    move                        ( Direction );
     void    equipWeapon                 ( Weapon* );
@@ -77,7 +76,7 @@ public:
     inline double   getStamina()            const   { return this->stamina;             }
     inline double   getDexterity()          const   { return this->dexterity;           }
 
-    inline vector<BodyPart>&                getBodyParts() { return this->bodyParts; }
+    inline const vector<BodyPart>&          getBodyParts() const { return this->bodyParts; }
     inline const vector<InventoryItem*>&    getInventory() const { return *this->inventory_ptr; }
     
     inline const Weapon& getEquipedWeapon() const { return *this->equiped_weapon_ptr; }
@@ -89,11 +88,11 @@ public:
     void setStamina     ( double );
     void setDexterity   ( double );
     void setInventory   ( const vector< InventoryItem* >* const );
-    void setBodyParts   ( vector< BodyPart >& );
+    void setBodyParts   ( vector< BodyPart > );
 
-    const Entity&   operator=   ( const Entity& );
-    int             operator==  ( const Entity& );
-    int             operator!=  ( const Entity& );
+    const Entity&   operator=       ( const Entity& );
+    int             operator==      ( const Entity& );
+    int             operator!=      ( const Entity& );
 
 protected:
 

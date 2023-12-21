@@ -52,9 +52,8 @@ const OffensiveConsumable &OffensiveConsumable::operator=(const OffensiveConsuma
 {
     if (&right != this)
     {
-        this->name = right.name;
-        this->description = right.description;
-        this->health_factor = right.health_factor;
+        Consumable::operator=(right);
+        this->damage = right.damage;
     }
     return *this;
 }

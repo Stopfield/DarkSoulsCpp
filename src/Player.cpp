@@ -33,9 +33,16 @@ Player::~Player()
     Player::numPlayers--;
 }
 
-void Player::interact()
+bool Player::interact( GameObject& other )
 {
-    std::cout << "É outro jogador. Ele não parece agressivo. Atacar?\n";
+    char choice;
+    std::cout << "Você quer interagir com " << this->name << "?";
+    std::cin >> choice;
+
+    if (choice == 'Y')
+        return true;
+    else
+        return false;
 }
 
 /**
@@ -155,21 +162,7 @@ const Player &Player::operator=(const Player& right)
 {
     if (this != &right)
     {
-        if (right.position == 0)
-            this->position = 0;
-        else
-            this->position = new Vector2D { right.position->x, right.position->y };
-        this->representation = right.representation;
-        this->name = right.name;
-        this->maxHealth = right.maxHealth;
-        this->health = right.health;
-        this->stamina = right.stamina;
-        this->strength = right.strength;
-        this->dexterity = right.dexterity;
-        this->bodyParts = right.bodyParts;
-
-        this->copyWeapon( right.equiped_weapon_ptr );
-        this->copyInventory( right.inventory_ptr );
+        Entity::operator=(right);
 
         if (this->attacks.empty())
             this->deleteAttacks();
@@ -181,9 +174,7 @@ const Player &Player::operator=(const Player& right)
 
 int Player::operator==(const Player& right)
 {
-    if (this->name == right.name )
-        return 1;
-    return 0;
+    return ( Entity::operator==(right) );
 }
 
 int Player::operator!=(const Player& other)

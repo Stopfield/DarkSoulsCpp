@@ -9,6 +9,7 @@ using std::string;
 using std::ostream;
 
 #include "GameObject.h"
+#include "Player.h"
 
 class NPC : public GameObject
 {
@@ -20,7 +21,7 @@ public:
     NPC( const NPC& );
     virtual ~NPC();
 
-    void interact() override;
+    bool interact( GameObject& ) override;
     void talk();
     void add_to_monologue( string );
 

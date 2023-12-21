@@ -62,9 +62,7 @@ const RestorativeConsumable &RestorativeConsumable::operator=(const RestorativeC
 {
     if (&right != this)
     {
-        this->name = right.name;
-        this->description = right.description;
-        this->health_factor = right.health_factor;
+        Consumable::operator=(right);
         this->restorative_modifier = right.restorative_modifier;
     }
     return *this;

@@ -98,38 +98,7 @@ const NormalBattle& NormalBattle::operator=(const NormalBattle& other)
 {
     if (this != &other)
     {
-        Enemy*  enemy_ptr   = nullptr;
-        Player* player_ptr  = nullptr;
-
-        /* Verifica se o primeiro_ptr é Player ou Enemy */
-        player_ptr = dynamic_cast<Player*> (other.primeiro_ptr);
-        if (player_ptr != nullptr)
-        {
-            this->primeiro_ptr = new Player( *player_ptr );
-            player_ptr = nullptr;
-        }
-        else
-        {
-            enemy_ptr = dynamic_cast<Enemy*> ( other.primeiro_ptr );
-            if (enemy_ptr != nullptr)
-                this->primeiro_ptr = new Enemy( *enemy_ptr );
-        }
-        
-        /* Verifica se o segundo_ptr é Player ou Enemy */
-        player_ptr = dynamic_cast<Player*> (other.segundo_ptr);
-        if (player_ptr != nullptr)
-        {
-            this->segundo_ptr = new Player( *player_ptr );
-            player_ptr = nullptr;
-        }
-        else
-        {
-            enemy_ptr = dynamic_cast<Enemy*> (other.segundo_ptr);
-            if (enemy_ptr != nullptr)
-                this->segundo_ptr = new Enemy( *enemy_ptr );
-        }
-        
-        this->turno = other.turno;
+        Battle::operator=(other);
     }
     return *this;
 }
@@ -153,10 +122,7 @@ int operator!(const NormalBattle& battle)
 
 int NormalBattle::operator==( const NormalBattle& other )
 {
-    return (
-            this->areEntitiesEqual( *this->primeiro_ptr, *other.primeiro_ptr )
-        &&  this->areEntitiesEqual( *this->segundo_ptr,  *other.segundo_ptr  )
-    );
+    return ( Battle::operator==(other) );
 }
 
 int NormalBattle::operator!=( const NormalBattle& other )

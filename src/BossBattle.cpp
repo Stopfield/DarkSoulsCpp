@@ -140,45 +140,14 @@ const BossBattle& BossBattle::operator=(const BossBattle& other)
 {
     if (this != &other)
     {
-        Enemy* enemy_ptr;
-        Player* player_ptr;
-        
-        // Is primeiro_ptr a player or an enemy?
-        player_ptr = dynamic_cast<Player*> (other.primeiro_ptr);
-        if (player_ptr == nullptr)
-        {
-            enemy_ptr = dynamic_cast<Enemy*> ( other.primeiro_ptr );
-            if (enemy_ptr != nullptr)
-                this->primeiro_ptr = new Enemy( *enemy_ptr );
-        }
-        else
-        {
-            this->primeiro_ptr = new Player( *player_ptr );
-        }
-        
-        // Is segundo_ptr a player?
-        player_ptr = dynamic_cast<Player*> (other.segundo_ptr);
-        if (player_ptr == nullptr)
-        {
-            enemy_ptr = dynamic_cast<Enemy*> (other.segundo_ptr);
-            if (enemy_ptr != nullptr)
-                this->segundo_ptr = new Enemy( *enemy_ptr );
-        }
-        else
-        {
-            this->segundo_ptr = new Player( *player_ptr );
-        }
-        this->turno = other.turno;
+        Battle::operator=(other);
     }
     return *this;
 }
 
 int BossBattle::operator==( const BossBattle& other )
 {
-    return (
-            this->areEntitiesEqual( *this->primeiro_ptr, *other.primeiro_ptr ) 
-        &&  this->areEntitiesEqual( *this->segundo_ptr,  *other.segundo_ptr  )
-    );
+    return ( Battle::operator==(other));
 }
 
 int BossBattle::operator!=( const BossBattle& other )

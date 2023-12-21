@@ -59,4 +59,35 @@ void GameObject::setRepresentation(char new_repr)
     this->representation = 'O';
 }
 
+const GameObject &GameObject::operator=(const GameObject& other)
+{
+    if (this != &other)
+    {
+        if (other.position != 0)
+        {
+            if (this->position != 0)
+                delete this->position;
+            this->position = new Vector2D {other.position->x, other.position->y };
+        }
+        this->representation = other.representation;
+    }
+    return *this;
+}
 
+int GameObject::operator== (const GameObject& right )
+{
+    return ( this->representation == right.representation );
+}
+
+int GameObject::operator!= (const GameObject& right )
+{
+    return !( *this == right );
+}
+
+ostream &operator<<(ostream& output, const GameObject& object)
+{
+    output << "Object " << object.getRepresentation() <<
+        " at (" << object.getPosition().x << ", " << object.getPosition().y
+        << ")\n";
+    return output;
+}

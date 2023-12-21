@@ -143,6 +143,7 @@ Enemy* EnemyParser::parseFile( std::ifstream& input_stream )
         {
             string probability;
             getline( input_stream, probability );
+            std::cout << "Probabilidade: " << probability << "\n";
             new_attack_ptr = AttackParser::loadFromStream( input_stream );
 
             new_enemy_ptr->addAttackAndProbability( new_attack_ptr, stoi( probability ) );

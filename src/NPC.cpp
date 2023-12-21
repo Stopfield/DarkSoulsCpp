@@ -22,10 +22,15 @@ NPC::~NPC()
 {
 }
 
-void NPC::interact()
+bool NPC::interact( GameObject& other)
 {
-    this->talk();
-    monologue_counter++;
+    if (Player* player_ptr = dynamic_cast<Player*> (&other))
+    {
+        this->talk();
+        monologue_counter++;
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -90,11 +95,7 @@ const NPC &NPC::operator=(const NPC& other)
 {
     if (this != &other)
     {
-        this->representation = other.representation;
-        if (other.position != nullptr)
-            this->position = new Vector2D { other.position->x, other.position->y };
-        else
-            this->position = nullptr;
+        GameObject::operator=(other);
         this->copyMonologue( other.getMonologues() );
         this->monologue_counter = other.monologue_counter;
     }
@@ -103,7 +104,7 @@ const NPC &NPC::operator=(const NPC& other)
 
 int NPC::operator==(const NPC& right)
 {
-    return (this->areMonologuesEqual( this->monologues, right.monologues ));
+    return ( GameObject::operator==(right) && this->areMonologuesEqual( this->monologues, right.monologues ));
 }
 
 int NPC::operator!=(const NPC& right)

@@ -22,7 +22,6 @@ Weapon::Weapon(string name, double damage, int durability) : Item(  )
 
 Weapon::Weapon( const Weapon& other ) : Item( other )
 {
-    this->name          = other.name;
     this->damage        = other.damage;
     this->durability    = other.durability;
 }
@@ -77,3 +76,33 @@ void Weapon::setDurability(int durability)
 }
 
 #pragma endregion
+
+const Weapon& Weapon::operator= ( const Weapon& other )
+{
+    if (this != &other)
+    {
+        Item::operator=(other);
+        this->damage = other.damage;
+        this->durability = other.durability;
+    }
+    return *this;
+}
+
+ostream& operator<< (ostream& output, const Weapon& weapon)
+{
+    output << "\n======   WEAPON   =====\n";
+    output << "* " << weapon.name << "\n";
+    output << "* Damage: \t" << weapon.damage << "\n";
+    output << "* Durability: \t" << weapon.durability << "\n";
+    return output;  
+}
+
+int Weapon::operator== (const Weapon& right )
+{
+    return ( Item::operator==(right) && this->damage == right.damage );
+}
+
+int Weapon::operator!= (const Weapon& right )
+{
+    return !( *this == right );
+}

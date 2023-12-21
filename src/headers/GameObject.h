@@ -12,20 +12,25 @@ using std::ostream;
 */
 class GameObject
 {
+    friend ostream& operator<<  ( ostream&, const GameObject& );
 public:
-
     GameObject  (  );
     GameObject  ( Vector2D, char );
     GameObject  ( const GameObject& );
     virtual ~GameObject();
 
-    virtual void interact() = 0;
+    virtual bool interact( GameObject& ) = 0;
 
     void setPosition            ( Vector2D );
     void setRepresentation      ( char );
 
     Vector2D getPosition()      const    { return this->position == 0 ? Vector2D { 0 } : *this->position;      };
     char getRepresentation()    const    { return this->representation; };
+
+    const GameObject&   operator=   ( const GameObject& );
+    int             operator==      ( const GameObject& );
+    int             operator!=      ( const GameObject& );
+
 protected:
     Vector2D* position = 0;
     char representation;

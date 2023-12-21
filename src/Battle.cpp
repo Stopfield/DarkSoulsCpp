@@ -16,36 +16,8 @@ Battle::Battle(Entity& primeiro, Entity& segundo)
 
 Battle::Battle(const Battle& other)
 {
-    Player* player_ptr  = nullptr;
-    Enemy*  enemy_ptr   = nullptr;
-
-    /* Verifica se a primeira entidade é Player ou Enemy */
-    player_ptr = dynamic_cast<Player*> (other.primeiro_ptr);
-    if (player_ptr != nullptr)
-    {
-        this->primeiro_ptr = new Player( *player_ptr );
-        player_ptr = nullptr;
-    }
-    else
-    {
-        enemy_ptr = dynamic_cast<Enemy*> (other.primeiro_ptr);
-        this->primeiro_ptr = new Enemy( *enemy_ptr );
-        enemy_ptr = nullptr;
-    }
-
-    /* Verifica se a segunda entidade é Player ou Enemy */
-    player_ptr = dynamic_cast<Player*> (other.segundo_ptr);
-    if (player_ptr != nullptr)
-    {
-        this->segundo_ptr = new Player( *player_ptr );
-        player_ptr = nullptr;
-    }
-    else
-    {
-        enemy_ptr = dynamic_cast<Enemy*> ( enemy_ptr );
-        this->segundo_ptr = new Enemy( *enemy_ptr );
-        enemy_ptr = nullptr;
-    }
+    this->primeiro_ptr = other.primeiro_ptr;
+    this->segundo_ptr = other.segundo_ptr;
     
     this->turno = other.turno;
 }
@@ -56,6 +28,30 @@ Battle::~Battle()
     // A futura classe Game vai lidar com eles
     // std::cout << "Destrutor do Battle\n" << std::endl;
 }
+
+bool areEntitiesEqual(Entity& primeiro, Entity& segundo)
+{
+    Player* first_player_ptr = nullptr;
+    Player* second_player_ptr = nullptr;
+
+    Enemy* first_enemy_ptr = nullptr;
+    Enemy* second_enemy_ptr = nullptr;
+
+    first_player_ptr    = dynamic_cast<Player*> (&primeiro);
+    second_player_ptr   = dynamic_cast<Player*> (&segundo);
+
+    if (first_player_ptr != nullptr && second_player_ptr != nullptr)
+        return ( *first_player_ptr == *second_player_ptr );
+
+    first_enemy_ptr = dynamic_cast<Enemy*> (&primeiro);
+    second_enemy_ptr = dynamic_cast<Enemy*> (&segundo);
+
+    if (first_enemy_ptr != nullptr && second_enemy_ptr != nullptr)
+        return ( *first_enemy_ptr == *second_enemy_ptr );
+
+    return false;
+}
+
 
 /* Se um ataque é nulo, a entidade escolhe (WIP) */
 void Battle::planTurn(
@@ -100,7 +96,7 @@ void Battle::setPrimeiro(Entity& primeiro)
         this->primeiro_ptr = &primeiro;
         return;
     }
-    if ( !this->areEntitiesEqual( *this->primeiro_ptr, primeiro ) )
+    if ( areEntitiesEqual( *this->primeiro_ptr, primeiro ) )
         this->primeiro_ptr = &primeiro;
 }
 
@@ -111,7 +107,7 @@ void Battle::setSegundo(Entity& segundo)
         this->segundo_ptr = &segundo;
         return;
     }
-    if ( !this->areEntitiesEqual( *this->segundo_ptr, segundo ) )
+    if ( areEntitiesEqual( *this->segundo_ptr, segundo ) )
         this->segundo_ptr = &segundo;
 }
 
@@ -125,29 +121,60 @@ void Battle::setTurno(int new_turno)
     this->turno = new_turno;
 }
 
-/**
- * Verifica se duas entidades são iguais.
- * Função de utilidade.
-*/
-bool Battle::areEntitiesEqual(Entity& primeiro, Entity& segundo)
+const Battle &Battle::operator=(const Battle& other)
 {
-    Player* first_player_ptr = nullptr;
-    Player* second_player_ptr = nullptr;
+    if (this != &other)
+    {
+        Enemy*  enemy_ptr   = nullptr;
+        Player* player_ptr  = nullptr;
 
-    Enemy* first_enemy_ptr = nullptr;
-    Enemy* second_enemy_ptr = nullptr;
+        /* Verifica se o primeiro_ptr é Player ou Enemy */
+        player_ptr = dynamic_cast<Player*> (other.primeiro_ptr);
+        if (player_ptr != nullptr)
+        {
+            this->primeiro_ptr = new Player( *player_ptr );
+            player_ptr = nullptr;
+        }
+        else
+        {
+            enemy_ptr = dynamic_cast<Enemy*> ( other.primeiro_ptr );
+            if (enemy_ptr != nullptr)
+                this->primeiro_ptr = new Enemy( *enemy_ptr );
+        }
+        
+        /* Verifica se o segundo_ptr é Player ou Enemy */
+        player_ptr = dynamic_cast<Player*> (other.segundo_ptr);
+        if (player_ptr != nullptr)
+        {
+            this->segundo_ptr = new Player( *player_ptr );
+            player_ptr = nullptr;
+        }
+        else
+        {
+            enemy_ptr = dynamic_cast<Enemy*> (other.segundo_ptr);
+            if (enemy_ptr != nullptr)
+                this->segundo_ptr = new Enemy( *enemy_ptr );
+        }
+        this->turno = other.turno;
+    }
+    return *this;
+}
 
-    first_player_ptr    = dynamic_cast<Player*> (&primeiro);
-    second_player_ptr   = dynamic_cast<Player*> (&segundo);
+int Battle::operator== (const Battle& right )
+{
+    return ( areEntitiesEqual(*this->primeiro_ptr, *right.primeiro_ptr)
+            && areEntitiesEqual(*this->segundo_ptr, *right.segundo_ptr) );
+}
 
-    if (first_player_ptr != nullptr && second_player_ptr != nullptr)
-        return ( *first_player_ptr == *second_player_ptr );
+int Battle::operator!= (const Battle& right )
+{
+    return !( *this == right );
+}
 
-    first_enemy_ptr = dynamic_cast<Enemy*> (&primeiro);
-    second_enemy_ptr = dynamic_cast<Enemy*> (&segundo);
-
-    if (first_enemy_ptr != nullptr && second_enemy_ptr != nullptr)
-        return ( *first_enemy_ptr == *second_enemy_ptr );
-
-    return false;
+ostream &operator<<(ostream& output, const Battle& battle)
+{
+    output << battle.primeiro_ptr->getName() << " VS. " << battle.segundo_ptr->getName() << "\n";
+    output << battle.primeiro_ptr->getHealth() << " | " << battle.segundo_ptr->getHealth() << "\n";
+    output << "Turno: " << battle.turno << "\n";
+    return output;
 }
